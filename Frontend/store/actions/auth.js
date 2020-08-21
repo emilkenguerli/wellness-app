@@ -5,10 +5,18 @@ import { AsyncStorage } from 'react-native';
 // export const LOGIN = 'LOGIN';
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
+export const SET_DID_TRY_AL = 'SET_DID_TRY_AL';
 
-export const authenticate = (token) => {
+let timer;
+
+export const setDidTryAL = () => {
+  return { type: SET_DID_TRY_AL };
+};
+
+export const authenticate = (userId, token, expiryTime) => {
     return dispatch => {
-        dispatch({ type: AUTHENTICATE, token: token });
+        dispatch(setLogoutTimer(expiryTime));
+        dispatch({ type: AUTHENTICATE, userId: userId, token: token });
     };
 };
 
@@ -27,25 +35,29 @@ export const signup = (email, password) => {
                 })
             }
         );
-
         if (!response.ok) {
             const errorResData = await response.json();
-            const errorId = errorResData.error.message;
+            const errorId = errorResData.error;
             let message = 'Something went wrong!';
             if (errorId === 'EMAIL_EXISTS') {
-                message = 'This email exists already!';
+              message = 'This email exists already!';
             }
             throw new Error(message);
         }
-
+        
         const resData = await response.json();
         console.log(resData);
         dispatch(
             authenticate(
-                resData.token
+                resData.user._id,
+                resData.token,
+                parseInt(resData.expiresIn) * 1000
             )
         );
-        saveDataToStorage(resData.token);
+        const expirationDate = new Date(
+            new Date().getTime() + parseInt(resData.expiresIn) * 1000
+        );
+        saveDataToStorage(resData.token, resData.user._id, expirationDate);
     };
 };
 
@@ -67,7 +79,7 @@ export const login = (email, password) => {
 
         if (!response.ok) {
           const errorResData = await response.json();
-          const errorId = errorResData.error.message;
+          const errorId = errorResData.error;
           let message = 'Something went wrong!';
           if (errorId === 'EMAIL_NOT_FOUND') {
             message = 'This email could not be found!';
@@ -80,24 +92,46 @@ export const login = (email, password) => {
         const resData = await response.json();
         console.log(resData);
         dispatch(
-        authenticate(
-            resData.token,
-        )
+            authenticate(
+                resData.user._id,
+                resData.token,
+                parseInt(resData.expiresIn) * 1000
+            )
         );
-        saveDataToStorage(resData.token);
+        const expirationDate = new Date(
+            new Date().getTime() + parseInt(resData.expiresIn) * 1000
+          );
+        saveDataToStorage(resData.token, resData.user._id, expirationDate);
     };
 };
 
 export const logout = () => {
+    clearLogoutTimer();
     AsyncStorage.removeItem('userData');
     return { type: LOGOUT };
 };
 
-const saveDataToStorage = (token, userId) => {
+const clearLogoutTimer = () => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+};
+
+const setLogoutTimer = expirationTime => {
+    return dispatch => {
+      timer = setTimeout(() => {
+        dispatch(logout());
+      }, expirationTime);
+    };
+};
+
+const saveDataToStorage = (token, userId, expirationDate) => {
     AsyncStorage.setItem(
         'userData',
         JSON.stringify({
-            token: token
+            token: token,
+            userId: userId,
+            expiryDate: expirationDate.toISOString()
         })
     );
 };
