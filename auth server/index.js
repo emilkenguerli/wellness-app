@@ -6,8 +6,8 @@ const app = express()
 const PORT = 9000
 const {mogoUrl} = require('./keys')
 
-
 require('./models/User');
+require('./models/Booking');
 
 const requireToken = require('./middleware/requireToken')
 const authRoutes = require('./routes/authRoutes')
@@ -27,11 +27,12 @@ mongoose.connection.on('error',(err)=>{
     console.log("this is error",err)
 })
 
-
-
 app.get('/',requireToken,(req,res)=>{
     res.send({email:req.user.email})
 })
+
+const bookingsRouter = require('./routes/bookings');
+app.use('/bookings', bookingsRouter)
 
 app.listen(PORT,()=>{
     console.log("server running "+PORT)

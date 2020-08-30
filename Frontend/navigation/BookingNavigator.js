@@ -11,9 +11,9 @@ import { useDispatch } from 'react-redux';
 import AuthScreen, {
   screenOptions as authScreenOptions
 } from '../screens/user/AuthScreen';
-import OrdersScreen, {
-  screenOptions as ordersScreenOptions
-} from '../screens/booking/OrdersScreen';
+import CalendarScreen, {
+  screenOptions as calendarScreenOptions
+} from '../screens/booking/CalendarScreen';
 import Colors from '../constants/Colors';
 import * as authActions from '../store/actions/auth';
 
@@ -30,17 +30,17 @@ const defaultNavOptions = {
   headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary
 };
 
-const OrdersStackNavigator = createStackNavigator();
+const CalendarStackNavigator = createStackNavigator();
 
-export const OrdersNavigator = () => {
+export const CalendarNavigator = () => {
   return (
-    <OrdersStackNavigator.Navigator screenOptions={defaultNavOptions}>
-      <OrdersStackNavigator.Screen
-        name="Orders"
-        component={OrdersScreen}
-        options={ordersScreenOptions}
+    <CalendarStackNavigator.Navigator screenOptions={defaultNavOptions}>
+      <CalendarStackNavigator.Screen
+        name="Calendar"
+        component={CalendarScreen}
+        options={calendarScreenOptions}
       />
-    </OrdersStackNavigator.Navigator>
+    </CalendarStackNavigator.Navigator>
   );
 };
 
@@ -72,8 +72,8 @@ export const BookingNavigator = () => {
       }}
     >
       <ShopDrawerNavigator.Screen
-        name="Orders"
-        component={OrdersNavigator}
+        name="Calendar"
+        component={CalendarNavigator}
         options={{
           drawerIcon: props => (
             <Ionicons
