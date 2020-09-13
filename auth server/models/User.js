@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt')
-const studentSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     email:{
         type:String,
         unique:true,
@@ -9,23 +9,32 @@ const studentSchema = new mongoose.Schema({
     password:{
         type:String,
         required:true
+    },
+    username:{
+        type:String,
+        required:true
+    },
+    bookings:{
+        type:[],
+        required:true
     }
-})
+//})   
+}, {collection: 'students'})
 
-studentSchema.pre('save',function(next){
-    const student = this;
-    if(!student.isModified('password')){
+userSchema.pre('save',function(next){
+    const user = this;
+    if(!user.isModified('password')){
         return next()
     }
     bcrypt.genSalt(10,(err,salt)=>{
         if(err){
             return next(err)
         }
-     bcrypt.hash(student.password,salt,(err,hash)=>{
+     bcrypt.hash(user.password,salt,(err,hash)=>{
          if(err){
              return next(err)
          }
-         student.password = hash;
+         user.password = hash;
          next()
      })
 
@@ -34,10 +43,10 @@ studentSchema.pre('save',function(next){
 })
 
 
-studentSchema.methods.comparePassword = function(candidatePassword) {
-    const student = this;
+userSchema.methods.comparePassword = function(candidatePassword) {
+    const user = this;
     return new Promise((resolve,reject)=>{
-        bcrypt.compare(candidatePassword,student.password,(err,isMatch)=>{
+        bcrypt.compare(candidatePassword,user.password,(err,isMatch)=>{
             if(err){
                 return reject(err)
             }
@@ -50,4 +59,4 @@ studentSchema.methods.comparePassword = function(candidatePassword) {
 
 }
 
-mongoose.model('Student',studentSchema);
+mongoose.model('User',userSchema);
