@@ -9,8 +9,19 @@ const userSchema = new mongoose.Schema({
     password:{
         type:String,
         required:true
+
+    },
+    username:{
+        type:String,
+        required:true
+    },
+    bookings:{
+        type:[],
+        required:true
     }
-})
+//})   
+}, {collection: 'students'})
+
 
 userSchema.pre('save',function(next){
     const user = this;

@@ -10,14 +10,15 @@ export const setDidTryAL = () => {
   return { type: SET_DID_TRY_AL };
 };
 
-export const authenticate = (userId, token, expiryTime) => {
+export const authenticate = (userId, token, expiryTime, email) => {
     return dispatch => {
         dispatch(setLogoutTimer(expiryTime));
-        dispatch({ type: AUTHENTICATE, userId: userId, token: token });
+        dispatch({ type: AUTHENTICATE, userId: userId, token: token, email: email });
     };
 };
 
 export const signup = (email, password) => {
+  console.log("hello");
     return async dispatch => {
         const response = await fetch(
             "http://192.168.50.136:9000/signup",
@@ -28,7 +29,9 @@ export const signup = (email, password) => {
                 },
                 body: JSON.stringify({
                     email: email,
-                    password: password
+                    password: password,
+                    username: "Chang",
+                    bookings: []
                 })
             }
         );
@@ -48,7 +51,8 @@ export const signup = (email, password) => {
             authenticate(
                 resData.user._id,
                 resData.token,
-                parseInt(resData.expiresIn) * 1000
+                parseInt(resData.expiresIn) * 1000,
+                email
             )
         );
         const expirationDate = new Date(
@@ -57,7 +61,8 @@ export const signup = (email, password) => {
         saveDataToStorage(resData.token, resData.user._id, expirationDate);
     };
 };
-
+//192.168.50.136
+//10.0.2.2
 export const login = (email, password) => {
     return async dispatch => {
     const response = await fetch(
@@ -92,7 +97,8 @@ export const login = (email, password) => {
             authenticate(
                 resData.user._id,
                 resData.token,
-                parseInt(resData.expiresIn) * 1000
+                parseInt(resData.expiresIn) * 1000,
+                email
             )
         );
         const expirationDate = new Date(

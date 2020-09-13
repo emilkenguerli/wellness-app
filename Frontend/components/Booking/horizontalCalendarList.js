@@ -1,89 +1,125 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TouchableHighlight, Button, Alert, Dimensions } from 'react-native';
 import { AsyncStorage } from 'react-native';
 import {CalendarList} from 'react-native-calendars';
 import { FlatList } from 'react-native-gesture-handler';
+import { Ionicons } from '@expo/vector-icons';
+import { useSelector, useDispatch } from 'react-redux';
+
+import Colors from '../../constants/Colors';
 
 const HorizontalCalendarList = (props) => {
 
-  const [selectedDate, setSelectedDate] = React.useState('2020-08-16');
-  const [markedDates, setMarkedDates] = React.useState({});
+  const [selectedDate, setSelectedDate] = React.useState(Date());
   const [times, setTimes] = React.useState([]);
+  const [selectedTime, setSelectedTime] = React.useState('');
 
-  const getDates = async () => {
-    try{
-      // const userData = await AsyncStorage.getItem('userData');
-      // const transformedData = JSON.parse(userData);
-      // const { token, userId, expiryDate } = transformedData;
-
-      // const response = await fetch(
-      //   'http://192.168.50.136:9000/users', {
-      //     headers:new Headers({
-      //       Authorization:"Bearer "+ token
-      //     })
-      // });
-      const response = await fetch(
-        'http://192.168.50.136:9000/bookings/' + props.service
-      );
-
-      const resData = await response.json();
-      //console.log(resData.times);
-      const markedDate = Object.assign({});
-      markedDate[resData.date] = {
-        selected: true,
-        selectedColor: '#DFA460'
-      };
-      setMarkedDates(markedDate);
-      setTimes(resData.times);
-      return;
-
-    }catch(error){
-      throw error;
-    }
-  };
+  const bookingID = Object.values(useSelector(state => state.bookings.items)).length;
 
   const setNewDaySelected = (date) => {
-    getDates();
+    setSelectedTime('');
     const markedDate = Object.assign({});
     markedDate[date] = {
       selected: true,
       selectedColor: '#DFA460'
     };
     setSelectedDate(date);
-    setMarkedDates(markedDate);
+
+    let objTimes = {};
+    let timelist = [];
+
+    // for(let i = 0;i < props.currentBookingData.length;i++){
+    //   if(props.currentBookingData[i][0] === date){
+    //     timelist = props.currentBookingData[i][1];
+    //     break;
+    //   } 
+    // }
+    // objTimes = Object.assign(timelist.map((o, index) => ({name: o, key: index})));
+    //setTimes(objTimes);
+    //let totalTimelist = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'];
+    //setTimes(Object.assign(totalTimelist.map((o, index) => ({name: o, key: index}))));
+    // for(let i = 0;i < 600/props.duration;i++){
+    //   timelist[i] = 
+    // }
+    if(props.duration === 60){
+      timelist = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'];
+    }else if(props.duration === 30){
+      timelist = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', 
+                  '13:30', '14:00','14:30'];
+    }else if(props.duration === 20){
+      timelist = [];
+    }else{
+      timelist = ['14:50', '15:40', '16:30', '17:20', '18:10']
+    }
+    setTimes(Object.assign(timelist.map((o, index) => ({name: o, key: index}))));
+
+  };
+
+  const confirmBookingHandler = () => {
+    if(selectedTime === ''){
+      Alert.alert('An Error Occurred!', 'Need to select a time!', [{ text: 'Okay' }]);
+    }
+    else{
+      //setBookingID(Object.values(useSelector(state => state.bookings.items)).length);
+      props.navigation.navigate('Options', {
+        team: props.team,
+        service: props.service,
+        bookingID: bookingID,
+        date: selectedDate,
+        time: selectedTime,
+        staff: Object.assign(props.staff.map((o, index) => ({label: o, value: index.toString()})))
+      });
+    };
   };
 
   return (
     <View style={{flex:1}}>
       <CalendarList
         testID={'horizontalList'}
-        markedDates={markedDates}
+        style={{height: Dimensions.get('window').height * 0.5}}
+        markedDates={props.currentMarkedDates}
         current={selectedDate}
         pastScrollRange={4}
         futureScrollRange={4}
         horizontal
         pagingEnabled
         onDayPress={(day) => {
-          setNewDaySelected(day.dateString);      
+          setNewDaySelected(day.dateString);               
         }}
         markingType={'custom'}
       />
       <View style={styles.listContainer}>
         <FlatList
-          keyExtractor={item => item}
+          keyExtractor={item => item.key}
           data={times}
           renderItem={itemData => (
             <TouchableHighlight 
               activeOpacity={0.6}
               underlayColor="#DDDDDD" 
               style={styles.listItem} 
-              onPress={() => {}}>
-                <Text style={styles.text}>{itemData.item}</Text>
+              extraData={selectedTime}
+              onPress={()=>{setSelectedTime(itemData.item.name)}}>
+                <View style={styles.contentChecked}>
+                  <Text style={styles.text}>{itemData.item.name}</Text>
+                  {selectedTime === itemData.item.name && <Ionicons 
+                    name={Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'} 
+                    size={18} 
+                    color="#900"
+                    style={styles.iconChecked}
+                    />}
+                </View>
             </TouchableHighlight>
           )}
           contentContainerStyle={styles.list}
         />
       </View>
+      <View style={styles.actions}>
+        <Button
+            color={Colors.primary}
+            title="Confirm Booking"
+            onPress={confirmBookingHandler}
+        /> 
+      </View>            
     </View>
   );
 };
@@ -95,6 +131,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   buttonContainer: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 20,
@@ -102,21 +139,21 @@ const styles = StyleSheet.create({
     maxWidth: '90%'
   },
   listContainer: {
-    flex: 1,
     width: '60%',
+    height: '20%',
     alignSelf: 'center'
   },
   list: {
     flexGrow: 1,
     // alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start' 
   },
   listItem: {
     flex: 1,
     borderColor: '#ccc',
     borderWidth: 1,
-    padding: 10,
-    marginVertical: 10,
+    padding: 5,
+    marginVertical: 5,
     backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'center',
@@ -128,6 +165,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     marginHorizontal: 20
+  },
+  contentChecked: {
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		height: '100%',
+		flexDirection: 'row'
+  },
+  iconChecked: {
+		marginRight: 20
+  },
+  actions: {
+    marginVertical: 10,
+    alignItems: 'center'
   }
 });
 

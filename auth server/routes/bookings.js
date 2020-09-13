@@ -8,13 +8,42 @@ router.route('/').get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/:service').get((req, res) => {
-    //console.log(req.params);
-    //const {service} = req.params.service;
-    //console.log({service});
-    Booking.findOne(req.params)
-      .then(booking => res.json(booking))
-      .catch(err => res.status(400).json('Error: ' + err));
-});
+router.post('/add',async (req,res)=>{
+  const {staffId, team, service, start, end, note, student, canceled, dna} = req.body;
+  try{
+    const booking = new Booking({staffId, team, service, start, end, note, student, canceled, dna});
+    console.log(booking);
+    await  booking.save(function(err){
+      if(err){
+           console.log(err);
+           return;
+      }
+    });
+    res.send({booking})
+
+  }catch(err){
+    return res.status(422).send(err.message)
+  }
+  
+  
+})
+
+router.post('/remove',async (req,res)=>{
+  const {id} = req.body;
+  console.log(id);
+  try{
+    await  Booking.deleteOne({ _id: id }, function (err) {
+      if(err) console.log(err);
+      console.log("Successful deletion");
+    });
+    
+    //res.send({booking})
+
+  }catch(err){
+    return res.status(422).send(err.message)
+  }
+  
+  
+})
 
 module.exports = router;

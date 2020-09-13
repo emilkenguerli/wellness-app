@@ -7,17 +7,24 @@ const router = express.Router();
 const User = mongoose.model('User');
 
 router.post('/signup',async (req,res)=>{
-   
-    const {email,password} = req.body;
+
+    const {email,password, username, bookings} = req.body;
+
     const user = await User.findOne({email})
     if(user){
       return res.status(422).send({error :"EMAIL_EXISTS"})
     }
     try{
-      const user = new User({email,password});
+
+      const user = new User({email, password, username, bookings });
+      console.log(user);
       await  user.save();
-      const token = jwt.sign({userId:user._id},jwtkey, { expiresIn: '5m' })
-      res.send({token, user})
+      //console.log("jy");
+      const token = jwt.sign({userId:user._id},jwtkey, { expiresIn: '30m' })
+      const decoded = jwt_decode(token)
+      const expiresIn = decoded.exp - (new Date().getTime()/1000)
+      res.send({token, user, expiresIn})
+
 
     }catch(err){
       return res.status(422).send(err.message)

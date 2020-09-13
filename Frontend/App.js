@@ -6,10 +6,14 @@ import * as Font from 'expo-font';
 import ReduxThunk from 'redux-thunk';
 
 import authReducer from './store/reducers/auth';
+import bookingsReducer from './store/reducers/bookings';
+import eventsReducer from './store/reducers/events';
 import AppNavigator from './navigation/AppNavigator';
 
 const rootReducer = combineReducers({
-  auth: authReducer
+  auth: authReducer,
+  bookings: bookingsReducer,
+  events: eventsReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
