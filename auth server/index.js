@@ -1,11 +1,11 @@
 const express  = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
-const tunnel = require('tunnel-ssh')
 
 const app = express()
 const PORT = 9000
 const {mogoUrl} = require('./keys')
+
 
 // var config = {
 //     username:'kngemi002',
@@ -14,6 +14,7 @@ const {mogoUrl} = require('./keys')
 //     port:22,
 //     dstPort:PORT,
 // };
+
 
 require('./models/User');
 require('./models/Booking');
@@ -24,6 +25,7 @@ const requireToken = require('./middleware/requireToken')
 const authRoutes = require('./routes/authRoutes')
 app.use(bodyParser.json())
 app.use(authRoutes)
+
 
 // var server = tunnel(config, function (error, server) {
 //     if(error){
@@ -48,6 +50,7 @@ app.use(authRoutes)
 // server.on('error', function(err){
 //     console.error('Something bad happened:', err);
 // });
+
 
 mongoose.connect(mogoUrl,{
     useNewUrlParser:true,

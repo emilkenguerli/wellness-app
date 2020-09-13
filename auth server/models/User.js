@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
     password:{
         type:String,
         required:true
+
     },
     username:{
         type:String,
@@ -20,6 +21,7 @@ const userSchema = new mongoose.Schema({
     }
 //})   
 }, {collection: 'students'})
+
 
 userSchema.pre('save',function(next){
     const user = this;
