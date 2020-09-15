@@ -36,13 +36,11 @@ const CalendarScreen = (props) => {
 
   const loadBookings = useCallback(async () => {
     setError(null);
-    setIsRefreshing(true);
     try {
       await dispatch(bookingsActions.fetchBookings());
     } catch (err) {
       setError(err.message);
     }
-    setIsRefreshing(false);
   }, [dispatch, setIsLoading, setError]);
 
   useEffect(() => {

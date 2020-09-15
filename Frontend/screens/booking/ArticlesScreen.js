@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   StatusBar,
   Animated,
+  Button
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import HeaderButton from '../../components/UI/HeaderButton';
@@ -18,37 +19,54 @@ import 'react-native-gesture-handler';
 import ArticleItem, { deviceWidth } from '../../components/Booking/ArticleItem';
 import Search from '../../components/Booking/Search'
 import { deviceHeight } from '../../components/Booking/Loader';
+import * as articleActions from '../../store/actions/articles';
+import Colors from '../../constants/Colors';
+
 
 console.disableYellowBox = true;
 
 const ArticlesScreen = (props) => {
-    const [articles, setArticles] = useState([]);
-    const [titles, setTitles] = useState([]);
+    //const [articles, setArticles] = useState([]);
+    //const [availableTitles, setAvailableTitles] = useState([]);
     const [scrollYValue, setScrollYValue] = useState(new Animated.Value(0));
     const [searchedTerm, setSearchedTerm] = useState('');
-  
-    const getArticles = async () => {
-        try{
-            const response = await fetch(
-              'http://192.168.50.136:9000/articles/'
-            );
-            
-            const resData = await response.json();
-            //console.log(resData.title)
-            setArticles(resData);
-            let temp = [];
-
-            for(let i = 0; i < resData.length;i++){
-                temp[i] = resData[i].title;
-            };
-            setTitles(temp);
-                        
-        }catch(error){
-              throw error;
-        }
-    };
+    const [isLoading, setIsLoading] = useState(false);
+    const [usersList, setUsersList] = useState([]);
+    const [currentDetails, setCurrentDetails] = useState({});
+    const articles = useSelector(state => state.articles.availableArticles);
+    const titles = useSelector(state => state.articles.availableTitles);
+    const dispatch = useDispatch();
+    console.log(articles);
     
-    getArticles();
+    useEffect(() => {
+      if (searchedTerm.length === 0) {
+        setUsersList(titles);
+      }
+      setUsersList(titles.filter((name) => {
+        return name.includes(searchedTerm)
+      }));
+      setIsLoading(true);
+      dispatch(articleActions.fetchArticles()).then(() => {
+        setIsLoading(false);
+      });
+    }, [dispatch, searchedTerm]);
+  
+    if (isLoading) {
+      return (
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      );
+    }
+  
+    if (articles.length === 0) {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text>No articles currently available</Text>
+        </View>
+      );
+    }
+    
 
     const clampedScroll = Animated.diffClamp(
         Animated.add(
@@ -62,17 +80,19 @@ const ArticlesScreen = (props) => {
         0,
         50,
     );
-
-    const usersList = useMemo(() => {
-        if (searchedTerm.length === 0) {
-          return titles;
-        }
-        const list = titles.filter((name) => {
-          return name.includes(searchedTerm)
-        });
-        return list;
-      }, [searchedTerm]);
-    //console.log(titles);
+          // return (
+          //   <View></View>
+          // )
+    // useEffect(() => {
+    //   console.log("hello");
+    //     if (searchedTerm.length === 0) {
+    //       return titles;
+    //     }
+    //     setUsersList(titles.filter((name) => {
+    //       return name.includes(searchedTerm)
+    //     }));
+    //     //return list;
+    //   }, [searchedTerm]);
     return (
         <Animated.View style={{
             backgroundColor: 'white',
@@ -107,7 +127,7 @@ const ArticlesScreen = (props) => {
                   <Search titles={titles} searchedTerm={searchedTerm} setSearchedTerm={setSearchedTerm} clampedScroll={clampedScroll} />
                 )}
                 {usersList.length === 0 && <Text style={{ textAlign: 'center', width: deviceWidth, fontSize: 18, paddingTop: 20 }}>No results for {searchedTerm}</Text>}
-                {usersList.map((name, index) => <ArticleItem key={index} name={name} />)}
+                {usersList.map((name, index) => <ArticleItem navigation={props.navigation} key={index} name={name} />)}
                 <View style={{ height: deviceHeight * 0.5 }}></View>
               </Animated.ScrollView>
             </View>

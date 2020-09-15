@@ -1,8 +1,8 @@
 import React from 'react';
-import { Dimensions, View, Text } from 'react-native';
+import { Dimensions, View, Text, TouchableOpacity } from 'react-native';
 export const deviceWidth = Dimensions.get('window').width;
 
-const ArticleItem = ({ name }) => (
+const ArticleItem = (props) => (
   <View style={{
     height: 60,
     width: deviceWidth,
@@ -11,7 +11,9 @@ const ArticleItem = ({ name }) => (
     borderColor: '#DBDBDB',
     justifyContent: 'center'
   }}>
-    <Text style={{ fontSize: 18, fontWeight: '700' }}> {name}</Text>
+    <TouchableOpacity onPress={() => {props.navigation.navigate('ArticleDetails', {title: props.name})}}> 
+      <Text style={{ fontSize: 18, fontWeight: '700' }}> {props.name}</Text>
+    </TouchableOpacity>
   </View>
 )
 
