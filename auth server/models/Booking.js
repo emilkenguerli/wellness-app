@@ -6,8 +6,8 @@ const bookingSchema = new Schema({
     staffId: {type: String, required: true },
     team: {type: String, required: true },
     service: {type: String, required: true},
-    start:{type:String, required:true},
-    end:{type:String, required: true},
+    start:{type:Date, required:true},
+    end:{type:Date, required: true},
     note: { type: String},
     student: {
       name: {type: String},

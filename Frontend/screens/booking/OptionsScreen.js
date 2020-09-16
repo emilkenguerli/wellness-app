@@ -79,11 +79,11 @@ const OptionsScreen = (props) => {
       staffId: chosenStaff,
       team: props.route.params.team,
       service: props.route.params.service,
-      end: props.route.params.date,  // Will change
-      start: props.route.params.time, // Will change
+      start: props.route.params.start,  // Will change
+      end: props.route.params.end, // Will change
       note: formState.inputValues.note
     };
-    //console.log(newBooking.bookingID);
+    //console.log(newBooking.start);
     dispatch(bookingsActions.addToBookings(newBooking));
     const resetAction = StackActions.replace('Calendar');
   

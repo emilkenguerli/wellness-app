@@ -26,8 +26,6 @@ import Colors from '../../constants/Colors';
 console.disableYellowBox = true;
 
 const ArticlesScreen = (props) => {
-    //const [articles, setArticles] = useState([]);
-    //const [availableTitles, setAvailableTitles] = useState([]);
     const [scrollYValue, setScrollYValue] = useState(new Animated.Value(0));
     const [searchedTerm, setSearchedTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -80,19 +78,7 @@ const ArticlesScreen = (props) => {
         0,
         50,
     );
-          // return (
-          //   <View></View>
-          // )
-    // useEffect(() => {
-    //   console.log("hello");
-    //     if (searchedTerm.length === 0) {
-    //       return titles;
-    //     }
-    //     setUsersList(titles.filter((name) => {
-    //       return name.includes(searchedTerm)
-    //     }));
-    //     //return list;
-    //   }, [searchedTerm]);
+ 
     return (
         <Animated.View style={{
             backgroundColor: 'white',
@@ -126,8 +112,9 @@ const ArticlesScreen = (props) => {
                 {Platform.OS === 'android' && (
                   <Search titles={titles} searchedTerm={searchedTerm} setSearchedTerm={setSearchedTerm} clampedScroll={clampedScroll} />
                 )}
+                {searchedTerm.length === 0 && titles.map((name, index) => <ArticleItem navigation={props.navigation} key={index} name={name} />)}
                 {usersList.length === 0 && <Text style={{ textAlign: 'center', width: deviceWidth, fontSize: 18, paddingTop: 20 }}>No results for {searchedTerm}</Text>}
-                {usersList.map((name, index) => <ArticleItem navigation={props.navigation} key={index} name={name} />)}
+                {searchedTerm.length !== 0 && usersList.map((name, index) => <ArticleItem navigation={props.navigation} key={index} name={name} />)}
                 <View style={{ height: deviceHeight * 0.5 }}></View>
               </Animated.ScrollView>
             </View>
