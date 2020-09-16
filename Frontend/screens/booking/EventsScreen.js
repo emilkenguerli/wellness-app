@@ -24,7 +24,7 @@ const EventsScreen = (props) => {
     const [error, setError] = useState();
     const events = useSelector(state => state.events.availableEvents);
     const dispatch = useDispatch();
-    //console.log(events);
+    console.log(events);
     
     const loadEvents = useCallback(async () => {
         setError(null);

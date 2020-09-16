@@ -15,19 +15,6 @@ export const fetchEvents = () => {
 
       const resData = await response.json();
       const loadedEvents = resData;
-      // console.log(resData)
-    //   for (const key in resData) {
-    //     loadedEvents.push(
-    //       new Product(
-    //         key,
-    //         resData[key].ownerId,
-    //         resData[key].title,
-    //         resData[key].imageUrl,
-    //         resData[key].description,
-    //         resData[key].price
-    //       )
-    //     );
-    //   }
 
       dispatch({
         type: SET_EVENTS,

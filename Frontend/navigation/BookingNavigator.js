@@ -26,6 +26,9 @@ import EventsScreen, {
 import ArticlesScreen, {
   screenOptions as articlesScreenOptions
 } from '../screens/booking/ArticlesScreen';
+import ArticleDetailScreen, {
+  screenOptions as articleDetailScreenOptions
+} from '../screens/booking/ArticleDetailScreen'; 
 import Colors from '../constants/Colors';
 import * as authActions from '../store/actions/auth';
 
@@ -98,6 +101,11 @@ export const ArticlesNavigator = () => {
         name="Articles"
         component={ArticlesScreen}
         options={articlesScreenOptions}
+      />
+      <ArticlesStackNavigator.Screen
+        name="ArticleDetails"
+        component={ArticleDetailScreen}
+        options={articleDetailScreenOptions}
       />
     </ArticlesStackNavigator.Navigator>
   );
