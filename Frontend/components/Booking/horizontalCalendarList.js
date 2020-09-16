@@ -5,6 +5,7 @@ import {CalendarList} from 'react-native-calendars';
 import { FlatList } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { useSelector, useDispatch } from 'react-redux';
+import moment, { min } from 'moment';
 
 import Colors from '../../constants/Colors';
 
@@ -41,6 +42,7 @@ const HorizontalCalendarList = (props) => {
     // for(let i = 0;i < 600/props.duration;i++){
     //   timelist[i] = 
     // }
+    
     if(props.duration === 60){
       timelist = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'];
     }else if(props.duration === 30){
@@ -61,12 +63,30 @@ const HorizontalCalendarList = (props) => {
     }
     else{
       //setBookingID(Object.values(useSelector(state => state.bookings.items)).length);
+      var start = new Date(selectedDate);
+      var hours = parseInt(selectedTime.slice(0,2));
+      var minutes = parseInt(selectedTime.slice(3))
+      //console.log(minutes);
+      start.setHours(start.getHours()+hours,minutes,0);
+      //console.log(start);
+      var end = new Date(start);
+      var total = minutes + props.duration;
+      var hours2 = parseInt(total/60);
+      if(hours2 > 0){
+        var minutes2 = total % 60;
+        end.setHours(end.getHours()+hours2,minutes2,0);
+      }
+      else{
+        end.setHours(end.getHours()+0,props.duration,0);
+      }     
+      //console.log(end);
+
       props.navigation.navigate('Options', {
         team: props.team,
         service: props.service,
         bookingID: bookingID,
-        date: selectedDate,
-        time: selectedTime,
+        start: start,
+        end: end,
         staff: Object.assign(props.staff.map((o, index) => ({label: o, value: index.toString()})))
       });
     };
@@ -98,7 +118,7 @@ const HorizontalCalendarList = (props) => {
               underlayColor="#DDDDDD" 
               style={styles.listItem} 
               extraData={selectedTime}
-              onPress={()=>{setSelectedTime(itemData.item.name)}}>
+              onPress={() => {setSelectedTime(itemData.item.name)}}>
                 <View style={styles.contentChecked}>
                   <Text style={styles.text}>{itemData.item.name}</Text>
                   {selectedTime === itemData.item.name && <Ionicons 

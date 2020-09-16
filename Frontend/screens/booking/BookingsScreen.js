@@ -16,14 +16,15 @@ import * as bookingsActions from '../../store/actions/bookings';
 import Colors from '../../constants/Colors';
 
 const BookingsScreen = props => {
-  //const bookings = Object.values(useSelector(state => state.bookings.items));
-  //console.log(bookings);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
-  const bookings = useSelector(state => state.bookings.items);
-  const dispatch = useDispatch();
+  const userEmail = useSelector(state => state.auth.email)
+  const bookings = Object.values(useSelector(state => state.bookings.items));
+  const userBookings = bookings.filter(booking => booking.student.email === userEmail);
   //console.log(bookings);
+  const dispatch = useDispatch();
+
     
     const loadBookings = useCallback(async () => {
         setError(null);
@@ -72,7 +73,7 @@ const BookingsScreen = props => {
         );
     }
 
-    if (!isLoading && bookings.length === 0) {
+    if (!isLoading && userBookings.length === 0) {
         return (
         <View style={styles.centered}>
             <Text>You don't have any bookings at the moment, go to Calendar to add one</Text>
@@ -86,7 +87,7 @@ const BookingsScreen = props => {
         <FlatList
             onRefresh={loadBookings}
             refreshing={isRefreshing}
-            data={bookings}
+            data={userBookings}
             keyExtractor={item => item._id}
             renderItem={itemData => (
                 <BookingItem
