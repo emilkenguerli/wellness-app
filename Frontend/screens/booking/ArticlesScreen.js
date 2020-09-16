@@ -36,7 +36,7 @@ const ArticlesScreen = (props) => {
     const articles = useSelector(state => state.articles.availableArticles);
     const titles = useSelector(state => state.articles.availableTitles);
     const dispatch = useDispatch();
-    console.log(articles);
+    //console.log(articles);
     
     useEffect(() => {
       if (searchedTerm.length === 0) {
