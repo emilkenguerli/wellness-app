@@ -30,7 +30,8 @@ export const signup = (email, password) => {
                 body: JSON.stringify({
                     email: email,
                     password: password,
-                    username: "Chang",
+                    studentNum: "Chang",
+                    phone: "XXXXXXXX",
                     bookings: []
                 })
             }

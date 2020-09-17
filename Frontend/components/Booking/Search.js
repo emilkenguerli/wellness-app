@@ -21,7 +21,7 @@ const Search = (props) => {
   const [searchTerm, setSearchTerm] = useState(props.searchedTerm);
   const temporarySearchResults = useMemo(() => {
     const list = props.titles.filter((name) => {
-      return name.includes(searchTerm)
+      return name.toLowerCase().includes(searchTerm.toLowerCase())
     })
     return list;
   }, [searchTerm])

@@ -93,19 +93,19 @@ export const addToBookings = (booking) => {
       }
 
       const resData = await response.json();
-      //console.log(resData);
-      console.log("yo");
+      //console.log(resData.booking);
+      //console.log("yo");
       const newBooking = {
-        bookingID: resData._id,
-        staffId: resData.staffId,
-        team: resData.team,
-        service: resData.service,
-        start: resData.start,
-        end: resData.end,
-        note: resData.note,
-        student: resData.student,
+        bookingID: resData.booking._id,
+        staffId: resData.booking.staffId,
+        team: resData.booking.team,
+        service: resData.booking.service,
+        start: resData.booking.start,
+        end: resData.booking.end,
+        note: resData.booking.note,
+        student: resData.booking.booking.student,
         canceled: resData.canceled,
-        dna: resData.dna
+        dna: resData.booking.dna
       };
       
       dispatch({

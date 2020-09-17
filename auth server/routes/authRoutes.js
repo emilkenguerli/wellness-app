@@ -8,7 +8,7 @@ const User = mongoose.model('User');
 
 router.post('/signup',async (req,res)=>{
 
-    const {email,password, username, bookings} = req.body;
+    const {email,password, studentNum, phone, bookings} = req.body;
 
     const user = await User.findOne({email})
     if(user){
@@ -16,7 +16,7 @@ router.post('/signup',async (req,res)=>{
     }
     try{
 
-      const user = new User({email, password, username, bookings });
+      const user = new User({email, password, studentNum, phone, bookings });
       console.log(user);
       await  user.save();
       //console.log("jy");

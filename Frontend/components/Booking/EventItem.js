@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
+import moment from 'moment';
 
 //import CartItem from './CartItem';
 import Colors from '../../constants/Colors';
@@ -13,7 +14,7 @@ const EventItem = props => {
         <Card style={styles.orderItem}>
         <View style={styles.summary}>
             <Text style={styles.totalAmount}>{props.item.title}</Text>
-            <Text style={styles.totalAmount}>{props.item.date}</Text>
+            <Text style={styles.totalAmount}>{moment(props.item.date).format('YYYY-MM-DD')}</Text>
         </View>
         <View style={styles.buttonContainer}>
             <Button
