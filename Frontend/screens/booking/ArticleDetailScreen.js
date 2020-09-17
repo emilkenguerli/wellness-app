@@ -22,7 +22,7 @@ import Search from '../../components/Booking/Search'
 import { deviceHeight } from '../../components/Booking/Loader';
 import * as articleActions from '../../store/actions/articles';
 import Colors from '../../constants/Colors';
-
+import moment from 'moment';
 
 
 const ArticleDetailScreen = (props) => {
@@ -34,7 +34,7 @@ const ArticleDetailScreen = (props) => {
     <ScrollView>
       <Text style={styles.price}>{selectedArticle.title}</Text>
       <Text style={styles.price}>{selectedArticle.author}</Text>
-      <Text style={styles.price}>{selectedArticle.date}</Text>
+      <Text style={styles.price}>{moment(selectedArticle.date).format('YYYY-MM-DD')}</Text>
       <Text style={styles.description}>{selectedArticle.description}</Text>
     </ScrollView>
   );

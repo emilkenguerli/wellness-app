@@ -16,14 +16,16 @@ import * as bookingsActions from '../../store/actions/bookings';
 import Colors from '../../constants/Colors';
 
 const BookingsScreen = props => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [error, setError] = useState();
-  const userEmail = useSelector(state => state.auth.email)
-  const bookings = Object.values(useSelector(state => state.bookings.items));
-  const userBookings = bookings.filter(booking => booking.student.email === userEmail);
-  //console.log(bookings);
-  const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [error, setError] = useState();
+    const userEmail = useSelector(state => state.auth.email)
+    const bookings = Object.values(useSelector(state => state.bookings.items));
+    //console.log(useSelector(state => state.auth.email));
+    //console.log(bookings);
+    const userBookings = bookings.filter(booking => booking.student.email === userEmail);
+    
+    const dispatch = useDispatch();
 
     
     const loadBookings = useCallback(async () => {

@@ -29,7 +29,7 @@ export default (state = initialState, action) => {
             bookingID, bookingStaffId, bookingTeam, bookingService, bookingStart, bookingEnd, 
             bookingNote, bookingStudent, bookingCancelled, bookingDna
         );
-        //console.log(newBookingsItem);
+        console.log(newBookingsItem);
         return {
           ...state,
           items: { ...state.items, [bookingID]: newBookingsItem },

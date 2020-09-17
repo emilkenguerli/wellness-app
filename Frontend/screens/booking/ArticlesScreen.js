@@ -41,7 +41,7 @@ const ArticlesScreen = (props) => {
         setUsersList(titles);
       }
       setUsersList(titles.filter((name) => {
-        return name.includes(searchedTerm)
+        return name.toLowerCase().includes(searchedTerm.toLowerCase())
       }));
       setIsLoading(true);
       dispatch(articleActions.fetchArticles()).then(() => {

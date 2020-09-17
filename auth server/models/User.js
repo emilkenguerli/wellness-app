@@ -11,14 +11,19 @@ const userSchema = new mongoose.Schema({
         required:true
 
     },
-    username:{
+    studentNum:{
         type:String,
+        unique:true,
         required:true
+    },
+    phone:{
+        type:String
     },
     bookings:{
         type:[],
         required:true
     }
+    
 //})   
 }, {collection: 'students'})
 

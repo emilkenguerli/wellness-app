@@ -59,25 +59,6 @@ const CalendarScreen = (props) => {
   }, [dispatch, loadBookings]);
 
   useEffect(() => {
-    //const getDates = async () => {
-      //console.log('test');
-      //try{
-        // const response = await fetch(
-        //   'http://192.168.50.136:9000/bookings/'
-        // );
-        // var d = new Date('2020-09-26');
-        // d.setHours(d.getHours()+7,30,0);
-        // console.log(moment(d).format('h:mm'));
-        // console.log(moment(d).format('YYYY-MM-DD'));
-        //const resData = await response.json();
-        //console.log("hello");
-        //let dates = [];
-          
-        // for(let i = 0; i < resData.dates.length;i++){
-        //   dates[i] = resData.dates[i][0];
-        // };
-
-        //setStaff(resData.staff);
         setStaff(['Anyone', 'Musa', 'Emil', 'Bonnie']);
         //console.log(resData.dates);
         //setBookingData(resData.dates);
@@ -94,7 +75,9 @@ const CalendarScreen = (props) => {
           count ++;
         };
         //console.log(alldates);
-        setMarkedDates(Object.assign(...alldates.map(o => ({[o]: {selected: true,selectedColor: '#DFA460'}}))));
+        if(specificService !== null){
+          setMarkedDates(Object.assign(...alldates.map(o => ({[o]: {selected: true,selectedColor: '#DFA460'}}))));
+        };
          
         if(specificService === 'omf' || specificService === 'tnoa' || specificService === 'tna' || 
           specificService === 'pn'){
