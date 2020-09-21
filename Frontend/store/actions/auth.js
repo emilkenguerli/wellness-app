@@ -48,18 +48,18 @@ export const signup = (email, password) => {
         
         const resData = await response.json();
         console.log(resData);
-        dispatch(
-            authenticate(
-                resData.user._id,
-                resData.token,
-                parseInt(resData.expiresIn) * 1000,
-                email
-            )
-        );
-        const expirationDate = new Date(
-            new Date().getTime() + parseInt(resData.expiresIn) * 1000
-        );
-        saveDataToStorage(resData.token, resData.user._id, expirationDate);
+        // dispatch(
+        //     authenticate(
+        //         resData.user._id,
+        //         resData.token,
+        //         parseInt(resData.expiresIn) * 1000,
+        //         email
+        //     )
+        // );
+        // const expirationDate = new Date(
+        //     new Date().getTime() + parseInt(resData.expiresIn) * 1000
+        // );
+        // saveDataToStorage(resData.token, resData.user._id, expirationDate);
     };
 };
 //192.168.50.136
@@ -88,6 +88,8 @@ export const login = (email, password) => {
             message = 'This email could not be found!';
           } else if (errorId === 'INVALID_PASSWORD') {
             message = 'This password is not valid!';
+          } else if (errorId === 'EMAIL_NOT_CONFIRMED'){
+            message = 'This email has not been confirmed yet!';
           }
           throw new Error(message);
         }
