@@ -1,11 +1,12 @@
 const express  = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
+const nodemailer = require('nodemailer')
 
 const app = express()
 const PORT = 9000
-const {mogoUrl} = require('./keys')
-
+const {mogoUrl, EMAIL_SECRET} = require('./keys')
+const jwt = require('jsonwebtoken')
 
 // var config = {
 //     username:'kngemi002',
@@ -15,6 +16,8 @@ const {mogoUrl} = require('./keys')
 //     dstPort:PORT,
 // };
 
+// create reusable transporter object using the default SMTP transport
+
 
 require('./models/User');
 require('./models/Booking');
@@ -23,6 +26,7 @@ require('./models/Event');
 
 const requireToken = require('./middleware/requireToken')
 const authRoutes = require('./routes/authRoutes')
+const User = mongoose.model('User')
 app.use(bodyParser.json())
 app.use(authRoutes)
 
@@ -68,6 +72,22 @@ mongoose.connection.on('error',(err)=>{
 app.get('/',requireToken,(req,res)=>{
     res.send({email:req.user.email})
 })
+
+app.get('/confirmation/:token', async (req, res) => {
+    try {
+        jwt.verify(req.params.token,EMAIL_SECRET,async (err,payload)=>{
+            if(err){
+              res.status(401).send({error:"link has expired"})
+            }
+         const {userId} = payload;
+         const user = await User.findById(userId)
+         await user.update({ confirmed: true });
+        })
+    } catch (e) {
+      res.send(e);
+    }
+    res.send("Email confirmed, registration completed!")
+});
 
 const bookingsRouter = require('./routes/bookings');
 app.use('/bookings', bookingsRouter)

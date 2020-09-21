@@ -38,7 +38,7 @@ const Input = props => {
   }, [inputState, onInputChange, id]);
 
   const textChangeHandler = text => {
-    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const emailRegex = /^[a-z0-9](\.?[a-z0-9]){7,}@((myuct)|([[a-z]{2,}.uct)|(uct))\.ac.za$/i;
     let isValid = true;
     if (props.required && text.trim().length === 0) {
       isValid = false;

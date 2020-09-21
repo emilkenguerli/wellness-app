@@ -6,10 +6,13 @@ const userSchema = new mongoose.Schema({
         unique:true,
         required:true
     },
+    confirmed:{
+        type:Boolean,
+        default: false
+    },
     password:{
         type:String,
         required:true
-
     },
     studentNum:{
         type:String,

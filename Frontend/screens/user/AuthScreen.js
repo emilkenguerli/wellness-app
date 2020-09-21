@@ -78,10 +78,12 @@ const AuthScreen = props => {
         formState.inputValues.password
       );
     }
+    setIsSignup(false);
     setError(null);
     setIsLoading(true);
     try {
       await dispatch(action);
+      setIsLoading(false);
       // props.navigation.navigate('Shop');
     } catch (err) {
       setError(err.message);
