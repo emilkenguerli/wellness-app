@@ -16,7 +16,7 @@ const BookingItem = props => {
         <Card style={styles.orderItem}>
         <View style={styles.summary}>
             <Text style={styles.totalAmount}>{moment(props.item.start).format('YYYY-MM-DD')}</Text>
-            <Text style={styles.totalAmount}>{moment(props.item.start).format('h:mm')}</Text>
+            <Text style={styles.totalAmount}>{moment(props.item.start).subtract(2, 'hours').format('HH:mm')}</Text>
         </View>
         <View style={styles.buttonContainer}>
             <Button
