@@ -132,8 +132,7 @@ const CalendarScreen = (props) => {
             tempAllDates.splice(count2,1);
             continue;
           }
-          count2 ++;
-          
+          count2 ++;         
         };
         alldates = [...tempAllDates];
         

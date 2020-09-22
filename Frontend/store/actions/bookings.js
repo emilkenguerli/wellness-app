@@ -77,10 +77,10 @@ export const addToBookings = (booking) => {
             end: booking.end,
             note: booking.note,
             student: {
-              name: "Emil",
-              studentNumber: "KNGEMI002",
+              name: getState().auth.name,
+              studentNumber: getState().auth.studentNumber,
               email: getState().auth.email,
-              phone: "XXXXXXXXXX"
+              phone: getState().auth.phone
             },
             canceled: false,
             dna: false

@@ -9,8 +9,8 @@ const nodemailer = require('nodemailer')
 
 router.post('/signup',async (req,res)=>{
 
-    const {email,password, studentNum, phone, bookings} = req.body;
-    console.log(GMAIL_PASS)
+    const {email,password, name, studentNum, phone, bookings} = req.body;
+
     const transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
@@ -29,7 +29,7 @@ router.post('/signup',async (req,res)=>{
     }
     try{
 
-      const user = new User({email, password, studentNum, phone, bookings });
+      const user = new User({email, password, name, studentNum, phone, bookings });
       console.log(user);
       await  user.save();
       const token = jwt.sign({userId:user._id},jwtkey, { expiresIn: '30m' })

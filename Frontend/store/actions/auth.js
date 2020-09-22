@@ -10,14 +10,15 @@ export const setDidTryAL = () => {
   return { type: SET_DID_TRY_AL };
 };
 
-export const authenticate = (userId, token, expiryTime, email) => {
+export const authenticate = (userId, token, expiryTime, email, name, studentNum, phone) => {
     return dispatch => {
         dispatch(setLogoutTimer(expiryTime));
-        dispatch({ type: AUTHENTICATE, userId: userId, token: token, email: email });
+        dispatch({ type: AUTHENTICATE, userId: userId, token: token, email: email, name: name,
+                  studentNumber: studentNum, phone: phone });
     };
 };
 
-export const signup = (email, password) => {
+export const signup = (email, password, name, studentNumber, phoneNumber) => {
   console.log("hello");
     return async dispatch => {
         const response = await fetch(
@@ -30,8 +31,9 @@ export const signup = (email, password) => {
                 body: JSON.stringify({
                     email: email,
                     password: password,
-                    studentNum: "Chang",
-                    phone: "XXXXXXXX",
+                    name: name,
+                    studentNum: studentNumber,
+                    phone: phoneNumber,
                     bookings: []
                 })
             }
@@ -102,7 +104,10 @@ export const login = (email, password) => {
                 resData.user._id,
                 resData.token,
                 parseInt(resData.expiresIn) * 1000,
-                email
+                email,
+                resData.user.name,
+                resData.user.studentNum,
+                resData.user.phone
             )
         );
         const expirationDate = new Date(

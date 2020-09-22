@@ -4,7 +4,10 @@ const initialState = {
   token: null,
   userId: null,
   didTryAutoLogin: false,
-  email: ''
+  email: '',
+  name: '',
+  studentNumber: '',
+  phone: ''
 };
 
 export default (state = initialState, action) => {
@@ -14,7 +17,10 @@ export default (state = initialState, action) => {
         token: action.token,
         userId: action.userId,
         didTryAutoLogin: true,
-        email: action.email
+        email: action.email,
+        name: action.name,
+        studentNumber: action.studentNumber,
+        phone: action.phone
       };
     case SET_DID_TRY_AL:
       return {

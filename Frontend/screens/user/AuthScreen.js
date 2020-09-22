@@ -19,7 +19,7 @@ import * as authActions from '../../store/actions/auth';
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
 const formReducer = (state, action) => {
-  
+
   if (action.type === FORM_INPUT_UPDATE) {
     const updatedValues = {
       ...state.inputValues,
@@ -52,11 +52,17 @@ const AuthScreen = props => {
   const [formState, dispatchFormState] = useReducer(formReducer, {
     inputValues: {
       email: '',
-      password: ''
+      password: '',
+      name: '',
+      studentNumber: '',
+      phoneNumber: ''
     },
     inputValidities: {
       email: false,
-      password: false
+      password: false,
+      name: false,
+      studentNumber: false,
+      phoneNumber: false
     },
     formIsValid: false
   });
@@ -72,7 +78,10 @@ const AuthScreen = props => {
     if (isSignup) {
       action = authActions.signup(
         formState.inputValues.email,
-        formState.inputValues.password
+        formState.inputValues.password,
+        formState.inputValues.name,
+        formState.inputValues.studentNumber,
+        formState.inputValues.phoneNumber
       );
     } else {
       action = authActions.login(
@@ -133,7 +142,7 @@ const AuthScreen = props => {
               keyboardType="default"
               secureTextEntry
               required
-              minLength={4}
+              minLength={8}
               autoCapitalize="none"
               errorText="Please enter a valid password."
               onInputChange={inputChangeHandler}
@@ -147,12 +156,46 @@ const AuthScreen = props => {
               keyboardType="default"
               secureTextEntry
               required
-              minLength={4}
+              minLength={8}
               autoCapitalize="none"
               errorText="Please enter a valid password."
               onInputChange={inputChangeHandler}
               initialValue=""
               />
+            )}
+            {isSignup &&(
+              <View>
+                <Input
+                id="name"
+                label="Name"
+                keyboardType="default"
+                required
+                autoCapitalize="none"
+                errorText="Please enter a valid name."
+                onInputChange={inputChangeHandler}
+                initialValue=""
+                />
+                <Input
+                id="studentNumber"
+                label="StudentNumber"
+                keyboardType="default"
+                required
+                autoCapitalize="none"                
+                errorText="Please enter a valid studentNumber."
+                onInputChange={inputChangeHandler}
+                initialValue=""
+                />
+                <Input
+                id="phoneNumber"
+                label="Phone Number (optional)"
+                keyboardType="default"
+                autoCapitalize="none"
+                minLength={10}
+                errorText="Please enter a valid phone number."
+                onInputChange={inputChangeHandler}
+                initialValue=""
+                />
+              </View>
             )}
             <View style={styles.buttonContainer}>
               {isLoading ? (
@@ -197,7 +240,7 @@ const styles = StyleSheet.create({
   authContainer: {
     width: '80%',
     maxWidth: 400,
-    maxHeight: 400,
+    maxHeight: "80%",
     padding: 20
   },
   buttonContainer: {
