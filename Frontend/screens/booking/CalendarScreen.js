@@ -1,23 +1,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
-  FlatList,
-  Text,
   Platform,
-  ActivityIndicator,
   StyleSheet
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { CalendarList } from 'react-native-calendars';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
 import moment from 'moment';
 
 import HeaderButton from '../../components/UI/HeaderButton';
-import Colors from '../../constants/Colors';
 import HorizontalCalendarList from '../../components/Booking/horizontalCalendarList';
-import { ScrollView } from 'react-native-gesture-handler';
 import * as bookingsActions from '../../store/actions/bookings';
 
 const CalendarScreen = (props) => {
@@ -29,11 +23,12 @@ const CalendarScreen = (props) => {
   const [bookingData, setBookingData] = useState([]);
   const [staff, setStaff] = useState([]);
   const [duration, setDuration] = useState(0);
+  const [times, setTimes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
   const bookings = useSelector(state => state.bookings.items);
   const dispatch = useDispatch();
-
+//console.log(bookings);
   const loadBookings = useCallback(async () => {
     setError(null);
     try {
@@ -59,13 +54,49 @@ const CalendarScreen = (props) => {
   }, [dispatch, loadBookings]);
 
   useEffect(() => {
+        setMarkedDates({});
         setStaff(['Anyone', 'Musa', 'Emil', 'Bonnie']);
         //console.log(resData.dates);
         //setBookingData(resData.dates);
         //setMarkedDates(Object.assign(...dates.map(o => ({[o]: {selected: true,selectedColor: '#DFA460'}}))));
+
+        let tduration = 0;
+        if(specificService === 'omf' || specificService === 'tnoa' || specificService === 'tna' || 
+          specificService === 'pn'){
+          setDuration(30);
+          tduration = 30;
+        }
+        else if(specificService === 'cov19'){
+          setDuration(20);
+          tduration = 20;
+        }
+        else if(specificService === 'sws'){
+          setDuration(40);
+          tduration = 40;
+        }
+        else{
+          setDuration(60);
+          tduration = 60;
+        }
+
+        let timelist = [];
+        if(tduration === 60){
+          timelist = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'];
+        }else if(tduration === 30){
+          timelist = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', 
+                      '13:30', '14:00','14:30'];
+        }else if(tduration === 20){
+          timelist = [];
+        }else{
+          timelist = ['14:50', '15:40', '16:30', '17:20', '18:10']
+        }
+        
+        setTimes(timelist);
+        
         let alldates = [];
         let count = 0;
-        //console.log(bookings);
+        //console.log(parseInt(moment(bookings[2].start).subtract(2, 'hours').format('HH')));
+        //console.log(parseInt(moment(bookings[2].start).format('mm')));
         for(let i = 0;i < 120;i++){
           if(moment().add(i, 'days').format('dddd') === "Saturday" || 
             moment().add(i, 'days').format('dddd') === "Sunday"){
@@ -74,24 +105,43 @@ const CalendarScreen = (props) => {
           alldates[count] = moment().add(i, 'days').format('YYYY-MM-DD');
           count ++;
         };
-        //console.log(alldates);
-        if(specificService !== null){
-          setMarkedDates(Object.assign(...alldates.map(o => ({[o]: {selected: true,selectedColor: '#DFA460'}}))));
+        console.log("hello");
+        // Runs through removes the dates that don't have times associated with them
+        
+        let tempAllDates = [...alldates];
+        let count2 = 0;
+        
+        for(let i = 0;i < alldates.length;i++){
+          let tempTimeList = [...timelist];
+          for(let j = 0;j < bookings.length;j++){
+            let start = parseInt(moment(bookings[j].start).subtract(2, 'hours').format('HH')) * 60 + parseInt(moment(bookings[j].start).format('mm'));
+            let end = parseInt(moment(bookings[j].end).subtract(2, 'hours').format('HH')) * 60 + parseInt(moment(bookings[j].end).format('mm'));
+            let count = 0;
+            let temp = [...tempTimeList];
+            for(let k = 0;k < tempTimeList.length;k++){
+              let now = parseInt(temp[count].slice(0,2)) * 60 + parseInt(temp[count].slice(3));
+              if(start <= now && now < end){
+                temp.splice(count,1);
+                continue;
+              }
+              count ++;
+            };
+            tempTimeList = [...temp];
+          };          
+          if(tempTimeList.length === 0 || tempTimeList === null){
+            tempAllDates.splice(count2,1);
+            continue;
+          }
+          count2 ++;
+          
         };
+        alldates = [...tempAllDates];
+        
+        if(specificService !== null && alldates.length !== 0){
+          setMarkedDates(Object.assign(...alldates.map(o => ({[o]: {selected: true,selectedColor: '#DFA460'}}))));
+        }
          
-        if(specificService === 'omf' || specificService === 'tnoa' || specificService === 'tna' || 
-          specificService === 'pn'){
-          setDuration(30);
-        }
-        else if(specificService === 'cov19'){
-          setDuration(20);
-        }
-        else if(specificService === 'sws'){
-          setDuration(40);
-        }
-        else{
-          setDuration(60);
-        }
+        
     //   }catch(error){
     //     throw error;
     //   }
@@ -219,6 +269,7 @@ const CalendarScreen = (props) => {
           service={pickedService}
           staff={staff}
           duration={duration}
+          times = {times}
           currentMarkedDates={markedDates} 
           currentBookingData={bookingData} 
           navigation={props.navigation}

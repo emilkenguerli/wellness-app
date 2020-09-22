@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Alert } from 'react-native';
 
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
@@ -48,6 +48,7 @@ export const signup = (email, password) => {
         
         const resData = await response.json();
         console.log(resData);
+        Alert.alert('Sign up complete', 'A confirmation email has been sent to your address, please go and press the link. Check spam folder as well', [{ text: 'Okay' }]);
         // dispatch(
         //     authenticate(
         //         resData.user._id,

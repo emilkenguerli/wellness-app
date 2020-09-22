@@ -14,8 +14,8 @@ const HorizontalCalendarList = (props) => {
   const [selectedDate, setSelectedDate] = React.useState(Date());
   const [times, setTimes] = React.useState([]);
   const [selectedTime, setSelectedTime] = React.useState('');
-
   const bookingID = Object.values(useSelector(state => state.bookings.items)).length;
+  const bookings = useSelector(state => state.bookings.items);
 
   const setNewDaySelected = (date) => {
     setSelectedTime('');
@@ -25,9 +25,8 @@ const HorizontalCalendarList = (props) => {
       selectedColor: '#DFA460'
     };
     setSelectedDate(date);
-
-    let objTimes = {};
-    let timelist = [];
+    //let objTimes = {};
+    let timelist = props.times;
 
     // for(let i = 0;i < props.currentBookingData.length;i++){
     //   if(props.currentBookingData[i][0] === date){
@@ -42,17 +41,25 @@ const HorizontalCalendarList = (props) => {
     // for(let i = 0;i < 600/props.duration;i++){
     //   timelist[i] = 
     // }
-    
-    if(props.duration === 60){
-      timelist = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'];
-    }else if(props.duration === 30){
-      timelist = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', 
-                  '13:30', '14:00','14:30'];
-    }else if(props.duration === 20){
-      timelist = [];
-    }else{
-      timelist = ['14:50', '15:40', '16:30', '17:20', '18:10']
-    }
+
+    for(let i = 0;i < bookings.length;i++){
+      if(moment(bookings[i].start).format('YYYY-MM-DD') === date && bookings[i].service === props.service){
+        let start = parseInt(moment(bookings[i].start).subtract(2, 'hours').format('HH')) * 60 + parseInt(moment(bookings[i].start).format('mm'));
+        let end = parseInt(moment(bookings[i].end).subtract(2, 'hours').format('HH')) * 60 + parseInt(moment(bookings[i].end).format('mm'));
+        let count = 0;
+        let temp = [...timelist];
+        for(let j = 0;j < timelist.length;j++){
+          let now = parseInt(temp[count].slice(0,2)) * 60 + parseInt(temp[count].slice(3));
+          if(start <= now && now < end){
+            temp.splice(count,1);
+            continue;
+          }
+          count ++;
+        };
+        timelist = [...temp];
+      }    
+    };
+
     setTimes(Object.assign(timelist.map((o, index) => ({name: o, key: index}))));
 
   };
@@ -65,7 +72,7 @@ const HorizontalCalendarList = (props) => {
       //setBookingID(Object.values(useSelector(state => state.bookings.items)).length);
       var start = new Date(selectedDate);
       var hours = parseInt(selectedTime.slice(0,2));
-      var minutes = parseInt(selectedTime.slice(3))
+      var minutes = parseInt(selectedTime.slice(3));
       //console.log(minutes);
       start.setHours(start.getHours()+hours,minutes,0);
       //console.log(start);

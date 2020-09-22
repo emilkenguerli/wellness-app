@@ -19,6 +19,7 @@ import * as authActions from '../../store/actions/auth';
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
 const formReducer = (state, action) => {
+  
   if (action.type === FORM_INPUT_UPDATE) {
     const updatedValues = {
       ...state.inputValues,
@@ -45,6 +46,7 @@ const AuthScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
   const [isSignup, setIsSignup] = useState(false);
+  const [signupToLogin, setSignupToLogin] = useState(false);
   const dispatch = useDispatch();
 
   const [formState, dispatchFormState] = useReducer(formReducer, {
@@ -78,13 +80,14 @@ const AuthScreen = props => {
         formState.inputValues.password
       );
     }
-    setIsSignup(false);
+    
     setError(null);
     setIsLoading(true);
     try {
       await dispatch(action);
       setIsLoading(false);
-      // props.navigation.navigate('Shop');
+      setIsSignup(false);
+      setSignupToLogin(true);
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
@@ -123,7 +126,8 @@ const AuthScreen = props => {
               onInputChange={inputChangeHandler}
               initialValue=""
             />
-            <Input
+            {!signupToLogin &&(
+              <Input
               id="password"
               label="Password"
               keyboardType="default"
@@ -134,7 +138,22 @@ const AuthScreen = props => {
               errorText="Please enter a valid password."
               onInputChange={inputChangeHandler}
               initialValue=""
-            />
+              />
+            )}
+            {signupToLogin &&(
+              <Input
+              id="password"
+              label="Password"
+              keyboardType="default"
+              secureTextEntry
+              required
+              minLength={4}
+              autoCapitalize="none"
+              errorText="Please enter a valid password."
+              onInputChange={inputChangeHandler}
+              initialValue=""
+              />
+            )}
             <View style={styles.buttonContainer}>
               {isLoading ? (
                 <ActivityIndicator size="small" color={Colors.primary} />
