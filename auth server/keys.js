@@ -3,5 +3,6 @@ module.exports = {
     jwtkey:"asasfefa",
     GMAIL_USER: "drolimacoli@gmail.com",
     GMAIL_PASS: "Lilgerald98",
-    EMAIL_SECRET: "bdaiwodnoiw"
+    EMAIL_SECRET: "bdaiwodnoiw",
+    RESET_PASSWORD_KEY: "hahahhaxd"
 }

@@ -127,7 +127,7 @@ export const removeFromBookings = (bookingID) => {
     //console.log(getState().bookings.items);
     try {
       const response = await fetch(
-        'http://192.168.50.136:9000/bookings/remove',
+        'http://10.0.2.2:9000/bookings/remove',
         {
           method: 'POST',
           headers: {

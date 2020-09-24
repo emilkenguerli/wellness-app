@@ -6,10 +6,12 @@ import {
   StyleSheet,
   Button,
   ActivityIndicator,
-  Alert
+  Alert,
+  TouchableOpacity,
+  Text
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Input from '../../components/UI/Input';
 import Card from '../../components/UI/Card';
@@ -21,6 +23,7 @@ const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 const formReducer = (state, action) => {
 
   if (action.type === FORM_INPUT_UPDATE) {
+
     const updatedValues = {
       ...state.inputValues,
       [action.input]: action.value
@@ -46,13 +49,14 @@ const AuthScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
   const [isSignup, setIsSignup] = useState(false);
-  const [signupToLogin, setSignupToLogin] = useState(false);
+  //const [signupToLogin, setSignupToLogin] = useState(false);
   const dispatch = useDispatch();
 
   const [formState, dispatchFormState] = useReducer(formReducer, {
     inputValues: {
       email: '',
       password: '',
+      password2: '',
       name: '',
       studentNumber: '',
       phoneNumber: ''
@@ -60,9 +64,10 @@ const AuthScreen = props => {
     inputValidities: {
       email: false,
       password: false,
+      password2: false,
       name: false,
       studentNumber: false,
-      phoneNumber: false
+      phoneNumber: true
     },
     formIsValid: false
   });
@@ -81,7 +86,8 @@ const AuthScreen = props => {
         formState.inputValues.password,
         formState.inputValues.name,
         formState.inputValues.studentNumber,
-        formState.inputValues.phoneNumber
+        formState.inputValues.phoneNumber,
+        formState.formIsValid
       );
     } else {
       action = authActions.login(
@@ -96,7 +102,7 @@ const AuthScreen = props => {
       await dispatch(action);
       setIsLoading(false);
       setIsSignup(false);
-      setSignupToLogin(true);
+      //setSignupToLogin(true);
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
@@ -115,10 +121,12 @@ const AuthScreen = props => {
     [dispatchFormState]
   );
 
+  const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 10;
+
   return (
     <KeyboardAvoidingView
-      behavior="padding"
-      keyboardVerticalOffset={50}
+      behavior='padding'
+      keyboardVerticalOffset={keyboardVerticalOffset}
       style={styles.screen}
     >
       <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
@@ -135,36 +143,56 @@ const AuthScreen = props => {
               onInputChange={inputChangeHandler}
               initialValue=""
             />
-            {!signupToLogin &&(
+            {!isSignup &&(
+              <View>
+                <Input
+                  id="password"
+                  label="Password"
+                  keyboardType="default"
+                  secureTextEntry
+                  required
+                  password
+                  minLength={8}
+                  autoCapitalize="none"
+                  errorText="Password needs to be at least 8 char."
+                  onInputChange={inputChangeHandler}
+                  initialValue=""
+                />
+                <TouchableOpacity style={{marginVertical: 15}} onPress={() => {props.navigation.navigate('ForgotPassword')}}>
+                  <Text style={{ fontSize: 13, fontWeight: '700'}}>{"Forgot Password?"}</Text>
+                </TouchableOpacity>
+              </View>
+            )}           
+            {isSignup &&(
               <Input
               id="password"
               label="Password"
               keyboardType="default"
               secureTextEntry
               required
+              password
               minLength={8}
               autoCapitalize="none"
-              errorText="Please enter a valid password."
-              onInputChange={inputChangeHandler}
-              initialValue=""
-              />
-            )}
-            {signupToLogin &&(
-              <Input
-              id="password"
-              label="Password"
-              keyboardType="default"
-              secureTextEntry
-              required
-              minLength={8}
-              autoCapitalize="none"
-              errorText="Please enter a valid password."
+              errorText="Password needs to be at least 8 char."
               onInputChange={inputChangeHandler}
               initialValue=""
               />
             )}
             {isSignup &&(
               <View>
+                <Input
+                id="password2"
+                label="Retype Password"
+                keyboardType="default"
+                secureTextEntry
+                required
+                password2
+                minLength={8}
+                autoCapitalize="none"
+                errorText="Passwords do not match."
+                onInputChange={inputChangeHandler}
+                initialValue=""
+                />
                 <Input
                 id="name"
                 label="Name"
@@ -180,6 +208,7 @@ const AuthScreen = props => {
                 label="StudentNumber"
                 keyboardType="default"
                 required
+                minLength={8}
                 autoCapitalize="none"                
                 errorText="Please enter a valid studentNumber."
                 onInputChange={inputChangeHandler}
@@ -188,12 +217,13 @@ const AuthScreen = props => {
                 <Input
                 id="phoneNumber"
                 label="Phone Number (optional)"
-                keyboardType="default"
+                keyboardType="number-pad"
                 autoCapitalize="none"
-                minLength={10}
+                phone
                 errorText="Please enter a valid phone number."
                 onInputChange={inputChangeHandler}
                 initialValue=""
+                initiallyValid={true}
                 />
               </View>
             )}
@@ -213,7 +243,7 @@ const AuthScreen = props => {
                 title={`Switch to ${isSignup ? 'Login' : 'Sign Up'}`}
                 color={Colors.accent}
                 onPress={() => {
-                  setIsSignup(prevState => !prevState);
+                  setIsSignup(prevState => !prevState)
                 }}
               />
             </View>
@@ -240,7 +270,7 @@ const styles = StyleSheet.create({
   authContainer: {
     width: '80%',
     maxWidth: 400,
-    maxHeight: "80%",
+    maxHeight: "85%",
     padding: 20
   },
   buttonContainer: {

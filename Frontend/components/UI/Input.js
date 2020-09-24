@@ -1,5 +1,8 @@
 import React, { useReducer, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+
+import * as authActions from '../../store/actions/auth';
 
 const INPUT_CHANGE = 'INPUT_CHANGE';
 const INPUT_BLUR = 'INPUT_BLUR';
@@ -23,13 +26,15 @@ const inputReducer = (state, action) => {
 };
 
 const Input = props => {
-  const [inputState, dispatch] = useReducer(inputReducer, {
+  const [inputState, dispatchInput] = useReducer(inputReducer, {
     value: props.initialValue ? props.initialValue : '',
     isValid: props.initiallyValid,
     touched: false
   });
-
+  const password = useSelector(state => state.auth.password);
   const { onInputChange, id } = props;
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (inputState.touched) {
@@ -37,9 +42,21 @@ const Input = props => {
     }
   }, [inputState, onInputChange, id]);
 
-  const textChangeHandler = text => {
+  const textChangeHandler = (text) => {
+    //console.log("Yo");
     const emailRegex = /^[a-z0-9](\.?[a-z0-9]){7,}@((myuct)|([[a-z]{2,}.uct)|(uct))\.ac.za$/i;
+    const phoneRegex = /^[0-9]{10,}$/;
+    const codeRegex = /^[0-9]{6,}$/;
     let isValid = true;
+    if(props.phone && ((text.length !== 0 && text.length !== 10) || !phoneRegex.test(text.toLowerCase()))){     
+      isValid = false;
+    }
+    if(props.code && (text.trim().length === 0 || !codeRegex.test(text.toLowerCase()))){
+      isValid = false;
+    }
+    if(props.password){
+      dispatch(authActions.setPassword(text));
+    }
     if (props.required && text.trim().length === 0) {
       isValid = false;
     }
@@ -58,11 +75,18 @@ const Input = props => {
     if (props.maxLength != null && text.length > props.maxLength) {
       isValid = false;
     }
-    dispatch({ type: INPUT_CHANGE, value: text, isValid: isValid });
+    if(props.password2 && (text !== password)){
+      isValid = false;
+    }
+    dispatchInput({ type: INPUT_CHANGE, value: text, isValid: isValid });
   };
 
   const lostFocusHandler = () => {
-    dispatch({ type: INPUT_BLUR });
+    // console.log("kek");
+    // if(props.phone){     
+    //   textChangeHandler(text);
+    // };
+    dispatchInput({ type: INPUT_BLUR });
   };
 
   return (
