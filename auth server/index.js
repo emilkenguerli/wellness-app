@@ -62,7 +62,7 @@ mongoose.connect(mogoUrl,{
 })
 
 mongoose.connection.on('connected',()=>{
-    console.log("connected to mongo")
+    console.log("Connected to MongoDB")
 })
 
 mongoose.connection.on('error',(err)=>{
@@ -77,7 +77,7 @@ app.get('/confirmation/:token', async (req, res) => {
     try {
         jwt.verify(req.params.token,EMAIL_SECRET,async (err,payload)=>{
             if(err){
-              res.status(401).send({error:"link has expired"})
+              res.status(401).send({error:"Link has expired"})
             }
          const {userId} = payload;
          const user = await User.findById(userId)
@@ -99,5 +99,5 @@ const eventsRouter = require('./routes/events');
 app.use('/events', eventsRouter)
 
 app.listen(PORT,()=>{
-    console.log("server running "+PORT)
+    console.log("Server running on port: "+PORT)
 })

@@ -1,4 +1,4 @@
-import { AUTHENTICATE, LOGOUT, SET_DID_TRY_AL } from '../actions/auth';
+import { AUTHENTICATE, LOGOUT, SET_DID_TRY_AL, SET_PASSWORD} from '../actions/auth';
 
 const initialState = {
   token: null,
@@ -7,11 +7,17 @@ const initialState = {
   email: '',
   name: '',
   studentNumber: '',
-  phone: ''
+  phone: '',
+  password: ''
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case SET_PASSWORD:
+      return {
+        ...state,
+        password: action.password
+      }
     case AUTHENTICATE:
       return {
         token: action.token,

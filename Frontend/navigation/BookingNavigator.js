@@ -11,6 +11,9 @@ import { useDispatch } from 'react-redux';
 import AuthScreen, {
   screenOptions as authScreenOptions
 } from '../screens/user/AuthScreen';
+import ForgotPassword, {
+  screenOptions as forgotPasswordScreenOptions
+} from '../screens/user/ForgotPasswordScreen';
 import CalendarScreen, {
   screenOptions as calendarScreenOptions
 } from '../screens/booking/CalendarScreen';
@@ -205,6 +208,11 @@ export const AuthNavigator = () => {
         name="Auth"
         component={AuthScreen}
         options={authScreenOptions}
+      />
+      <AuthStackNavigator.Screen
+        name="ForgotPassword"
+        component={ForgotPassword}
+        options={forgotPasswordScreenOptions}
       />
     </AuthStackNavigator.Navigator>
   );

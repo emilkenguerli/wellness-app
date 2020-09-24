@@ -14,6 +14,11 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    resetPassword:{
+        code: {type: String},
+        token: {type: String},
+        verified:{type:Boolean, default: false}
+    },
     name:{
         type:String,
         unique:true,
@@ -50,6 +55,28 @@ userSchema.pre('save',function(next){
              return next(err)
          }
          user.password = hash;
+         next()
+     })
+
+    })
+
+})
+
+userSchema.pre('update',function(next){     
+    const data = this.getUpdate();
+    if (!data.password) {
+        return next();
+    }
+    bcrypt.genSalt(10,(err,salt)=>{
+        if(err){
+            return next(err)
+        }
+     bcrypt.hash(data.password,salt,(err,hash)=>{
+         if(err){
+             return next(err)
+         }
+         data.password = hash
+         this.getUpdate({}, data);
          next()
      })
 
