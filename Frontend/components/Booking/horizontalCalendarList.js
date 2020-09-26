@@ -8,16 +8,21 @@ import { useSelector, useDispatch } from 'react-redux';
 import moment, { min } from 'moment';
 
 import Colors from '../../constants/Colors';
+import * as calendarActions from '../../store/actions/calendar';
 
 const HorizontalCalendarList = (props) => {
 
   const [selectedDate, setSelectedDate] = React.useState(Date());
-  const [times, setTimes] = React.useState([]);
+  //const [times, setTimes] = React.useState([]);
   const [selectedTime, setSelectedTime] = React.useState('');
   const bookingID = Object.values(useSelector(state => state.bookings.items)).length;
   const bookings = useSelector(state => state.bookings.items);
+  const times = useSelector(state => state.calendar.availableTimes);
+  //console.log(times);
+  const dispatch = useDispatch();
 
   const setNewDaySelected = (date) => {
+    //console.log("yo");
     setSelectedTime('');
     const markedDate = Object.assign({});
     markedDate[date] = {
@@ -25,47 +30,14 @@ const HorizontalCalendarList = (props) => {
       selectedColor: '#DFA460'
     };
     setSelectedDate(date);
-    //let objTimes = {};
     let timelist = props.times;
-
-    // for(let i = 0;i < props.currentBookingData.length;i++){
-    //   if(props.currentBookingData[i][0] === date){
-    //     timelist = props.currentBookingData[i][1];
-    //     break;
-    //   } 
-    // }
-    // objTimes = Object.assign(timelist.map((o, index) => ({name: o, key: index})));
-    //setTimes(objTimes);
-    //let totalTimelist = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'];
-    //setTimes(Object.assign(totalTimelist.map((o, index) => ({name: o, key: index}))));
-    // for(let i = 0;i < 600/props.duration;i++){
-    //   timelist[i] = 
-    // }
-
-    for(let i = 0;i < bookings.length;i++){
-      if(moment(bookings[i].start).format('YYYY-MM-DD') === date && bookings[i].service === props.service){
-        let start = parseInt(moment(bookings[i].start).subtract(2, 'hours').format('HH')) * 60 + parseInt(moment(bookings[i].start).format('mm'));
-        let end = parseInt(moment(bookings[i].end).subtract(2, 'hours').format('HH')) * 60 + parseInt(moment(bookings[i].end).format('mm'));
-        let count = 0;
-        let temp = [...timelist];
-        for(let j = 0;j < timelist.length;j++){
-          let now = parseInt(temp[count].slice(0,2)) * 60 + parseInt(temp[count].slice(3));
-          if(start <= now && now < end){
-            temp.splice(count,1);
-            continue;
-          }
-          count ++;
-        };
-        timelist = [...temp];
-      }    
-    };
-
-    setTimes(Object.assign(timelist.map((o, index) => ({name: o, key: index}))));
+    
+    dispatch(calendarActions.setTimes(timelist, props.service, date));
 
   };
 
   const confirmBookingHandler = () => {
-    if(selectedTime === ''){
+    if(selectedTime === '' || times.length === 0){
       Alert.alert('An Error Occurred!', 'Need to select a time!', [{ text: 'Okay' }]);
     }
     else{

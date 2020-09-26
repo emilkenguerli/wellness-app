@@ -9,13 +9,15 @@ import authReducer from './store/reducers/auth';
 import bookingsReducer from './store/reducers/bookings';
 import eventsReducer from './store/reducers/events';
 import articlesReducer from './store/reducers/articles';
+import calendarReducer from './store/reducers/calendar';
 import AppNavigator from './navigation/AppNavigator';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   bookings: bookingsReducer,
   events: eventsReducer,
-  articles: articlesReducer
+  articles: articlesReducer,
+  calendar: calendarReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
