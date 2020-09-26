@@ -13,6 +13,7 @@ import moment from 'moment';
 import HeaderButton from '../../components/UI/HeaderButton';
 import HorizontalCalendarList from '../../components/Booking/horizontalCalendarList';
 import * as bookingsActions from '../../store/actions/bookings';
+import * as calendarActions from '../../store/actions/calendar';
 
 const CalendarScreen = (props) => {
   const [pickedItem, setPickedItem] = useState('medical');
@@ -54,6 +55,7 @@ const CalendarScreen = (props) => {
   }, [dispatch, loadBookings]);
 
   useEffect(() => {
+        dispatch(calendarActions.resetTimes());
         setMarkedDates({});
         setStaff(['Anyone', 'Musa', 'Emil', 'Bonnie']);
         //console.log(resData.dates);
@@ -92,6 +94,7 @@ const CalendarScreen = (props) => {
         }
         
         setTimes(timelist);
+        //dispatch(calendarActions.setTimes(timelist));
         
         let alldates = [];
         let count = 0;
