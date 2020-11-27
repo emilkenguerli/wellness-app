@@ -8,16 +8,7 @@ const PORT = 9000
 const {mogoUrl, EMAIL_SECRET} = require('./keys')
 const jwt = require('jsonwebtoken')
 
-// var config = {
-//     username:'kngemi002',
-//     Password:'SohYiu7a',
-//     host:'sws-1.cs.uct.ac.za',
-//     port:22,
-//     dstPort:PORT,
-// };
-
 // create reusable transporter object using the default SMTP transport
-
 
 require('./models/User');
 require('./models/Booking');
@@ -30,48 +21,45 @@ const User = mongoose.model('User')
 app.use(bodyParser.json())
 app.use(authRoutes)
 
-
-// var server = tunnel(config, function (error, server) {
-//     if(error){
-//         console.log("SSH connection error: " + error);
-//     }
-//     mongoose.connect(mogoUrl,{
-//         useNewUrlParser:true,
-//         useUnifiedTopology:true
-//     })
-
-//     var db = mongoose.connection;
-//     db.on('error', console.error.bind(console, 'DB connection error:'));
-//     db.on('connected', function() {
-//         // we're connected!
-//         console.log("DB connection successful");
-//         // console.log(server);
-//     });
-
-//     app.use(authRoutes)
-// });
-
-// server.on('error', function(err){
-//     console.error('Something bad happened:', err);
-// });
-
+/**
+ * Connect to the MongoDB database specified in keys.js
+ */
 
 mongoose.connect(mogoUrl,{
     useNewUrlParser:true,
     useUnifiedTopology:true
 })
 
+/**
+ * Verify that the connection was successful
+ */
+
 mongoose.connection.on('connected',()=>{
     console.log("Connected to MongoDB")
 })
+
+/**
+ * Throw an error if the connection was not successful
+ */
 
 mongoose.connection.on('error',(err)=>{
     console.log("this is error",err)
 })
 
+/**
+ * Route a request to the middleware to see if its token is verified and the action can proceed
+ */
+
 app.get('/',requireToken,(req,res)=>{
     res.send({email:req.user.email})
 })
+
+/**
+ * When the user presses the link in the email confirmation email, the JSON request will be
+ * routed here and if tne token is verified and hasn't expired, a query will be made to
+ * the database to update the email confirmation field to true of the user who's email address 
+ * matches the one in the address. 
+ */
 
 app.get('/confirmation/:token', async (req, res) => {
     try {
@@ -97,6 +85,10 @@ app.use('/articles', articlesRouter)
 
 const eventsRouter = require('./routes/events');
 app.use('/events', eventsRouter)
+
+/**
+ * Verfies which port the server is currently running on
+ */
 
 app.listen(PORT,()=>{
     console.log("Server running on port: "+PORT)

@@ -2,8 +2,11 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
+/**
+ * The MongoDB model of the articles collection
+ */
+
 const articleSchema = new Schema({
-  //userID: {type: String, required:true},
   articleOwner: { 
     staffId: {type: String , required: true},
     email: {type: String, required: true},

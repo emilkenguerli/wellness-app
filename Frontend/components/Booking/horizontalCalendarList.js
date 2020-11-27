@@ -1,53 +1,55 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TouchableHighlight, Button, Alert, Dimensions } from 'react-native';
-import { AsyncStorage } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, Button, Alert, Dimensions } from 'react-native';
 import {CalendarList} from 'react-native-calendars';
 import { FlatList } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { useSelector, useDispatch } from 'react-redux';
-import moment, { min } from 'moment';
 
 import Colors from '../../constants/Colors';
 import * as calendarActions from '../../store/actions/calendar';
 
-const HorizontalCalendarList = (props) => {
+/**
+ * This is a reusable custom component that displays the calendar on the Calendar Screen as well as 
+ * dynamically rendering a list of times under the calendar when a date is selected
+ * @param {*} props 
+ */
 
+const HorizontalCalendarList = (props) => {
   const [selectedDate, setSelectedDate] = React.useState(Date());
-  //const [times, setTimes] = React.useState([]);
   const [selectedTime, setSelectedTime] = React.useState('');
   const bookingID = Object.values(useSelector(state => state.bookings.items)).length;
-  const bookings = useSelector(state => state.bookings.items);
   const times = useSelector(state => state.calendar.availableTimes);
-  //console.log(times);
   const dispatch = useDispatch();
 
-  const setNewDaySelected = (date) => {
-    //console.log("yo");
-    setSelectedTime('');
-    const markedDate = Object.assign({});
-    markedDate[date] = {
-      selected: true,
-      selectedColor: '#DFA460'
-    };
-    setSelectedDate(date);
-    let timelist = props.times;
-    
-    dispatch(calendarActions.setTimes(timelist, props.service, date));
+  /**
+   * This method is called whenever a new date is selected by a user on the calendar component, it resets 
+   * the time that was selected on the previous date, then it rerenders the time list based on the service 
+   * and date selected by the user.
+   * @param {*} date : the date selected by the user
+   */
 
+  const setNewDaySelected = (date) => {
+    setSelectedTime('');
+    setSelectedDate(date);   
+    dispatch(calendarActions.setTimes(props.times, props.service, date));
   };
+
+  /**
+   * This method is called whenever the user presses the confirm booking button. It confirms that all the 
+   * required filters have been selected and then navigates to the Options Screen if no errors are thrown.
+   */
 
   const confirmBookingHandler = () => {
     if(selectedTime === '' || times.length === 0){
       Alert.alert('An Error Occurred!', 'Need to select a time!', [{ text: 'Okay' }]);
     }
     else{
-      //setBookingID(Object.values(useSelector(state => state.bookings.items)).length);
       var start = new Date(selectedDate);
       var hours = parseInt(selectedTime.slice(0,2));
       var minutes = parseInt(selectedTime.slice(3));
-      //console.log(minutes);
+
       start.setHours(start.getHours()+hours,minutes,0);
-      //console.log(start);
+
       var end = new Date(start);
       var total = minutes + props.duration;
       var hours2 = parseInt(total/60);
@@ -58,7 +60,6 @@ const HorizontalCalendarList = (props) => {
       else{
         end.setHours(end.getHours()+0,props.duration,0);
       }     
-      //console.log(end);
 
       props.navigation.navigate('Options', {
         team: props.team,
@@ -123,6 +124,10 @@ const HorizontalCalendarList = (props) => {
   );
 };
 
+/**
+ * The styles used for the Horizontal Calendar custom component
+ */
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
@@ -144,7 +149,6 @@ const styles = StyleSheet.create({
   },
   list: {
     flexGrow: 1,
-    // alignItems: 'center',
     justifyContent: 'flex-start' 
   },
   listItem: {

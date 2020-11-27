@@ -20,6 +20,13 @@ import * as authActions from '../../store/actions/auth';
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
+/**
+ * Sets the overall form of all the input objects on the screen and whether they are valid or not
+ * @param {*} state : this is the state of the current input object, in terms of it's value and 
+ *                    whether it is valid or not
+ * @param {*} action : only the action of the input being updated is recognised
+ */
+
 const formReducer = (state, action) => {
 
   if (action.type === FORM_INPUT_UPDATE) {
@@ -45,11 +52,17 @@ const formReducer = (state, action) => {
   return state;
 };
 
+/**
+ * The login components are rendered first on the screen then if the signup button is pressed the
+ * signup components are rendered. This is the first screen a new user will always see and a 
+ * current user if they have logged out.
+ * @param {*} props 
+ */
+
 const AuthScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
   const [isSignup, setIsSignup] = useState(false);
-  //const [signupToLogin, setSignupToLogin] = useState(false);
   const dispatch = useDispatch();
 
   const [formState, dispatchFormState] = useReducer(formReducer, {
@@ -72,11 +85,22 @@ const AuthScreen = props => {
     formIsValid: false
   });
 
+  /**
+   * This React hook throws an error if the actions dispatched to the redux store are not
+   * successful.
+   */
+
   useEffect(() => {
     if (error) {
       Alert.alert('An Error Occurred!', error, [{ text: 'Okay' }]);
     }
   }, [error]);
+
+  /**
+   * Renders login or signup components depending on which one was last rendered, it renders
+   * the opposite. Dispatches the sign up and login actions to the redux store when their 
+   * respective buttons are pressed by the user.
+   */
 
   const authHandler = async () => {
     let action;
@@ -95,19 +119,23 @@ const AuthScreen = props => {
         formState.inputValues.password
       );
     }
-    
+
     setError(null);
     setIsLoading(true);
     try {
       await dispatch(action);
       setIsLoading(false);
       setIsSignup(false);
-      //setSignupToLogin(true);
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
     }
   };
+
+  /**
+   * Upon any of the input values of any of the text fields changing, the form of the input
+   * objects is updated
+   */
 
   const inputChangeHandler = useCallback(
     (inputIdentifier, inputValue, inputValidity) => {
@@ -129,7 +157,7 @@ const AuthScreen = props => {
       keyboardVerticalOffset={keyboardVerticalOffset}
       style={styles.screen}
     >
-      <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
+      <LinearGradient colors={['#e6e6fa', '#e6e6fa']} style={styles.gradient}>
         <Card style={styles.authContainer}>
           <ScrollView>
             <Input
@@ -143,7 +171,7 @@ const AuthScreen = props => {
               onInputChange={inputChangeHandler}
               initialValue=""
             />
-            {!isSignup &&(
+            {!isSignup && (
               <View>
                 <Input
                   id="password"
@@ -158,72 +186,72 @@ const AuthScreen = props => {
                   onInputChange={inputChangeHandler}
                   initialValue=""
                 />
-                <TouchableOpacity style={{marginVertical: 15}} onPress={() => {props.navigation.navigate('ForgotPassword')}}>
-                  <Text style={{ fontSize: 13, fontWeight: '700'}}>{"Forgot Password?"}</Text>
+                <TouchableOpacity style={{ marginVertical: 15 }} onPress={() => { props.navigation.navigate('ForgotPassword') }}>
+                  <Text style={{ fontSize: 13, fontWeight: '700' }}>{"Forgot Password?"}</Text>
                 </TouchableOpacity>
               </View>
-            )}           
-            {isSignup &&(
-              <Input
-              id="password"
-              label="Password"
-              keyboardType="default"
-              secureTextEntry
-              required
-              password
-              minLength={8}
-              autoCapitalize="none"
-              errorText="Password needs to be at least 8 char."
-              onInputChange={inputChangeHandler}
-              initialValue=""
-              />
             )}
-            {isSignup &&(
-              <View>
-                <Input
-                id="password2"
-                label="Retype Password"
+            {isSignup && (
+              <Input
+                id="password"
+                label="Password"
                 keyboardType="default"
                 secureTextEntry
                 required
-                password2
+                password
                 minLength={8}
                 autoCapitalize="none"
-                errorText="Passwords do not match."
+                errorText="Password needs to be at least 8 char."
                 onInputChange={inputChangeHandler}
                 initialValue=""
+              />
+            )}
+            {isSignup && (
+              <View>
+                <Input
+                  id="password2"
+                  label="Retype Password"
+                  keyboardType="default"
+                  secureTextEntry
+                  required
+                  password2
+                  minLength={8}
+                  autoCapitalize="none"
+                  errorText="Passwords do not match."
+                  onInputChange={inputChangeHandler}
+                  initialValue=""
                 />
                 <Input
-                id="name"
-                label="Name"
-                keyboardType="default"
-                required
-                autoCapitalize="none"
-                errorText="Please enter a valid name."
-                onInputChange={inputChangeHandler}
-                initialValue=""
+                  id="name"
+                  label="Name"
+                  keyboardType="default"
+                  required
+                  autoCapitalize="none"
+                  errorText="Please enter a valid name."
+                  onInputChange={inputChangeHandler}
+                  initialValue=""
                 />
                 <Input
-                id="studentNumber"
-                label="StudentNumber"
-                keyboardType="default"
-                required
-                minLength={8}
-                autoCapitalize="none"                
-                errorText="Please enter a valid studentNumber."
-                onInputChange={inputChangeHandler}
-                initialValue=""
+                  id="studentNumber"
+                  label="StudentNumber"
+                  keyboardType="default"
+                  required
+                  minLength={8}
+                  autoCapitalize="none"
+                  errorText="Please enter a valid studentNumber."
+                  onInputChange={inputChangeHandler}
+                  initialValue=""
                 />
                 <Input
-                id="phoneNumber"
-                label="Phone Number (optional)"
-                keyboardType="number-pad"
-                autoCapitalize="none"
-                phone
-                errorText="Please enter a valid phone number."
-                onInputChange={inputChangeHandler}
-                initialValue=""
-                initiallyValid={true}
+                  id="phoneNumber"
+                  label="Phone Number (optional)"
+                  keyboardType="number-pad"
+                  autoCapitalize="none"
+                  phone
+                  errorText="Please enter a valid phone number."
+                  onInputChange={inputChangeHandler}
+                  initialValue=""
+                  initiallyValid={true}
                 />
               </View>
             )}
@@ -231,12 +259,12 @@ const AuthScreen = props => {
               {isLoading ? (
                 <ActivityIndicator size="small" color={Colors.primary} />
               ) : (
-                <Button
-                  title={isSignup ? 'Sign Up' : 'Login'}
-                  color={Colors.primary}
-                  onPress={authHandler}
-                />
-              )}
+                  <Button
+                    title={isSignup ? 'Sign Up' : 'Login'}
+                    color={Colors.primary}
+                    onPress={authHandler}
+                  />
+                )}
             </View>
             <View style={styles.buttonContainer}>
               <Button
@@ -254,9 +282,17 @@ const AuthScreen = props => {
   );
 };
 
+/**
+ * This sets the header title of the screen to 'Authenticate'
+ */
+
 export const screenOptions = {
   headerTitle: 'Authenticate'
 };
+
+/**
+ * The styles for the Auth Screen component
+ */
 
 const styles = StyleSheet.create({
   screen: {

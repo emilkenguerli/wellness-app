@@ -3,9 +3,14 @@ import { View, Text, Button, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 
-//import CartItem from './CartItem';
 import Colors from '../../constants/Colors';
 import Card from '../UI/Card';
+
+/**
+ * Reusable Event item custom component, represents each event displayed in the Events Screen on the 
+ * events list
+ * @param {*} props 
+ */
 
 const EventItem = props => {
     const [showDetails, setShowDetails] = useState(false);
@@ -18,7 +23,7 @@ const EventItem = props => {
         </View>
         <View style={styles.buttonContainer}>
             <Button
-                color={Colors.accent}
+                color={Colors.primary}
                 title={showDetails ? 'Hide Details' : 'Show Details'}
                 onPress={() => {
                 setShowDetails(prevState => !prevState);
@@ -29,11 +34,7 @@ const EventItem = props => {
             <View style={styles.detailItems}>
             {
                 <View style={styles.cartItem}>
-                    <View style={styles.itemData}>
-                        <View style={{flexDirection: 'row'}}>
-                            <Text style={{fontFamily: 'open-sans-bold'}}>{"Description: "} </Text>
-                            <Text>{props.item.description}</Text>
-                        </View>                        
+                    <View style={styles.itemData}>                                        
                         <View style={{flexDirection: 'row'}}>
                             <Text style={{fontFamily: 'open-sans-bold'}}>{"Venue: "} </Text>
                             <Text>{props.item.venue}</Text>
@@ -42,6 +43,10 @@ const EventItem = props => {
                             <Text style={{fontFamily: 'open-sans-bold'}}>{"Duration: "} </Text>
                             <Text>{props.item.duration}</Text>
                         </View>
+                        <View style={{flexDirection: 'row'}}>
+                            <Text style={{fontFamily: 'open-sans-bold'}}>{"Description: "} </Text>
+                            <Text>{props.item.description}</Text>
+                        </View>   
                     </View>
                 </View>
             }
@@ -53,6 +58,10 @@ const EventItem = props => {
     );
 };
 
+/**
+ * The styles used for the Bookings item custom component
+ */
+
 const styles = StyleSheet.create({
   orderItem: {
     margin: 20,
@@ -60,7 +69,6 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   itemData: {
-    //flexDirection: 'row',
     alignItems: 'flex-start',
     width: '80%'
   },

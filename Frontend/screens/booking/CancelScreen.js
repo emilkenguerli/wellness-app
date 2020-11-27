@@ -48,14 +48,8 @@ const formReducer = (state, action) => {
   return state;
 };
 
-/**
- * Renders the optional additional information that a user can provide when making a booking, such 
- * as making a note and choosing a preferred available staff member for that service
- * @param {*} props 
- */
 
-const OptionsScreen = (props) => {
-  const [chosenStaff, setChosenStaff] = useState('Anyone');
+const CancelScreen = (props) => {
   const dispatch = useDispatch();
 
   const [formState, dispatchFormState] = useReducer(formReducer, {
@@ -84,48 +78,16 @@ const OptionsScreen = (props) => {
     [dispatchFormState]
   );
 
-  /**
-   * Dispatches the action to the redux store to save the booking to the database when the 
-   * user presses the save booking button
-   */
-
-  const saveBookingHandler = () => {
-    const newBooking = {
-      bookingID: props.route.params.bookingID,
-      staffId: chosenStaff,
-      team: props.route.params.team,
-      service: props.route.params.service,
-      start: props.route.params.start,
-      end: props.route.params.end,
-      note: formState.inputValues.note
-    };
-    dispatch(bookingsActions.addToBookings(newBooking));
-    const resetAction = StackActions.replace('Calendar');
-
-    props.navigation.dispatch(resetAction);
+  const cancelBookingHandler = () => {
+    dispatch(bookingsActions.removeFromBookings(props.route.params.id))
     props.navigation.navigate('Bookings');
   };
 
   return (
     <LinearGradient colors={['#e6e6fa', '#e6e6fa']} style={styles.screen} >
-      <View style={styles.staffContainer}>
-        {<TitleText style={styles.title}>Select Staff</TitleText>}
-        <DropDownPicker
-          items={props.route.params.staff}
-          defaultValue={'0'}
-          placeholder="Select a Service"
-          containerStyle={{ height: 40, width: '50%' }}
-          style={{ backgroundColor: '#fafafa' }}
-          itemStyle={{
-            justifyContent: 'flex-start'
-          }}
-          dropDownStyle={{ backgroundColor: '#fafafa' }}
-          onChangeItem={item => setChosenStaff(item.label)}
-        />
-      </View>
-      <View style={styles.noteContainer}>
-        {<TitleText style={styles.title}>Please let us know if you have any special requests. Thank you</TitleText>}
+      <View style={styles.noteContainer}>      
         <View style={styles.gradient}>
+        {<TitleText style={styles.title}>Reason for cancelation</TitleText>}
           <Card style={styles.authContainer}>
             <ScrollView>
               <Input
@@ -143,9 +105,9 @@ const OptionsScreen = (props) => {
         </View>
         <View style={styles.buttonContainer}>
           <Button
-            title="Save Booking"
+            title="Confirm Cancelation"
             color={Colors.primary}
-            onPress={saveBookingHandler}
+            onPress={cancelBookingHandler}
           />
         </View>
       </View>
@@ -154,17 +116,17 @@ const OptionsScreen = (props) => {
 };
 
 /**
- * This sets the header title of the screen to 'Optional'
+ * This sets the header title of the screen to 'Cancel Confirmation'
  */
 
 export const screenOptions = navData => {
   return {
-    headerTitle: 'Optional'
+    headerTitle: 'Cancel Confirmation'
   };
 };
 
 /**
- * The styles for the Options Screen component
+ * The styles for the Cancel Screen component
  */
 
 const styles = StyleSheet.create({
@@ -174,16 +136,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     marginVertical: 10,
-    fontFamily: 'open-sans-bold'
-  },
-  staffContainer: {
-    marginVertical: 15,
-    marginHorizontal: 30,
-    alignItems: 'center'
+    fontFamily: 'open-sans-bold',
   },
   noteContainer: {
     marginVertical: 15,
-    marginHorizontal: 30,
+    marginHorizontal: 30
   },
   authContainer: {
     width: '80%',
@@ -201,4 +158,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default OptionsScreen;
+export default CancelScreen;

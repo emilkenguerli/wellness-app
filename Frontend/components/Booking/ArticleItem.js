@@ -2,6 +2,12 @@ import React from 'react';
 import { Dimensions, View, Text, TouchableOpacity } from 'react-native';
 export const deviceWidth = Dimensions.get('window').width;
 
+/**
+ * This is a reusable Article item custom component, represents each item displayed on the article search 
+ * results list  
+ * @param {*} props
+ */
+
 const ArticleItem = (props) => (
   <View style={{
     height: 60,

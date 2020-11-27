@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt')
+
+/**
+ * The MongoDB model of the students collection
+ */
+
 const userSchema = new mongoose.Schema({
     email:{
         type:String,
@@ -37,9 +42,11 @@ const userSchema = new mongoose.Schema({
         required:true
     }
     
-//})   
 }, {collection: 'students'})
 
+/**
+ * When a new student is being added their password is encrypted using becrypt before being stored
+ */
 
 userSchema.pre('save',function(next){
     const user = this;
@@ -61,6 +68,10 @@ userSchema.pre('save',function(next){
     })
 
 })
+
+/**
+ * When a student's password is being updated, their password is encrypted using becrypt before being stored
+ */
 
 userSchema.pre('update',function(next){     
     const data = this.getUpdate();

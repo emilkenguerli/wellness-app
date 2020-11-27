@@ -10,14 +10,24 @@ import { useDispatch } from 'react-redux';
 import Colors from '../constants/Colors';
 import * as authActions from '../store/actions/auth';
 
+/**
+ * This screen only consists of a loading circle that tries to login automatically if the user hasn't
+ * logged out yet but closed the app and now wants to enter it again
+ * @param {*} props 
+ */
+
 const StartupScreen = props => {
   const dispatch = useDispatch();
+
+  /**
+   * Dispatches multiple user authentication actions to the redux store to determine whether the token
+   * has expired and if the user qualifies for automatic login
+   */
 
   useEffect(() => {
     const tryLogin = async () => {
       const userData = await AsyncStorage.getItem('userData');
       if (!userData) {
-        // props.navigation.navigate('Auth');
         dispatch(authActions.setDidTryAL());
         return;
       }
@@ -26,14 +36,12 @@ const StartupScreen = props => {
       const expirationDate = new Date(expiryDate);
 
       if (expirationDate <= new Date() || !token || !userId) {
-        // props.navigation.navigate('Auth');
         dispatch(authActions.setDidTryAL());
         return;
       }
 
       const expirationTime = expirationDate.getTime() - new Date().getTime();
 
-      // props.navigation.navigate('Shop');
       dispatch(authActions.authenticate(userId, token, expirationTime));
     };
 
@@ -46,6 +54,10 @@ const StartupScreen = props => {
     </View>
   );
 };
+
+/**
+ * The styles of the loading circle component
+ */
 
 const styles = StyleSheet.create({
   screen: {

@@ -1,40 +1,29 @@
-import React, { useEffect, useState, useReducer, useCallback, useMemo } from 'react';
+import React from 'react';
 import {
-  View,
-  FlatList,
   Text,
-  Platform,
-  ActivityIndicator,
   StyleSheet,
-  SafeAreaView,
-  StatusBar,
-  Animated,
-  Button,
   ScrollView
 } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import HeaderButton from '../../components/UI/HeaderButton';
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { useSelector } from 'react-redux';
 import 'react-native-gesture-handler';
 
-import ArticleItem, { deviceWidth } from '../../components/Booking/ArticleItem';
-import Search from '../../components/Booking/Search'
-import { deviceHeight } from '../../components/Booking/Loader';
-import * as articleActions from '../../store/actions/articles';
-import Colors from '../../constants/Colors';
 import moment from 'moment';
 
+/**
+ * This renders the article details screen, so when you press on an article of interest in directs you
+ * here and displays the different fields of the article is the following order: title, author, article
+ * date then the actual article content
+ */
 
 const ArticleDetailScreen = (props) => {
-    //const articles = useSelector(state => state.articles.availableArticles);
     const selectedArticle = useSelector(state =>
         state.articles.availableArticles.find(article => article.title === props.route.params.title)
     );
     return (
     <ScrollView>
-      <Text style={styles.price}>{selectedArticle.title}</Text>
-      <Text style={styles.price}>{selectedArticle.author}</Text>
-      <Text style={styles.price}>{moment(selectedArticle.date).format('YYYY-MM-DD')}</Text>
+      <Text style={styles.articleDetails}>{selectedArticle.title}</Text>
+      <Text style={styles.articleDetails}>{selectedArticle.author}</Text>
+      <Text style={styles.articleDetails}>{moment(selectedArticle.date).format('YYYY-MM-DD')}</Text>
       <Text style={styles.description}>{selectedArticle.description}</Text>
     </ScrollView>
   );
@@ -51,11 +40,9 @@ export const screenOptions = navData => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    //alignItems: 'center',
   },
-  price: {
+  articleDetails: {
     fontSize: 20,
-    //color: '#888',
     textAlign: 'center',
     marginVertical: 20,
     fontFamily: 'open-sans-bold'

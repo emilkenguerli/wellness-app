@@ -4,17 +4,22 @@ export const ADD_TO_STATE = 'ADD_TO_STATE';
 export const REMOVE_FROM_STATE = 'REMOVE_FROM_STATE';
 export const SET_BOOKINGS = 'SET_BOOKINGS';
 
-// export const addToState = booking => {
-//   return { type: ADD_TO_BOOKINGS, booking: booking };
-// };
+/**
+ * A single booking is removed from the state of the redux store in the reducer
+ * @param {*} bookingID : the id of a particular booking object
+ */
 
 export const removeFromState = bookingID => {
   return { type: REMOVE_FROM_STATE, bid: bookingID };
 };
 
+/**
+ * Send a GET Request over an establised HTTPUrlConnection to fetch the bookings from the
+ * database. It then saves these bookings to the state in the bookings reducer
+ */
+
 export const fetchBookings = () => {
   return async (dispatch, getState) => {
-    // any async code you want!
     const userId = getState().auth.userId;
     try {
       const response = await fetch(
@@ -26,10 +31,9 @@ export const fetchBookings = () => {
       }
 
       const resData = await response.json();
-      //console.log(resData)
       const loadedBookings = [];
-      
-      for(let i = 0;i < resData.length;i++){
+
+      for (let i = 0; i < resData.length; i++) {
         const newBooking = {
           bookingID: resData[i]._id,
           staffId: resData[i].staffId,
@@ -50,18 +54,22 @@ export const fetchBookings = () => {
       });
 
     } catch (err) {
-      // send to custom analytics server
       throw err;
     }
   };
 };
 
+/**
+ * Send a POST Request over an establised HTTPUrlConnection to add a booking to the
+ * database. It then dispatches to the reducer to add this booking to the state of
+ * available bookings in the redux store
+ * @param {*} booking : booking object 
+ */
+
 export const addToBookings = (booking) => {
   return async (dispatch, getState) => {
-    // any async code you want!
-    //const userId = getState().auth.userId;
-    //console.log(booking);
     try {
+      console.log(getState().auth.email);
       const response = await fetch(
         'http://192.168.50.136:9000/bookings/add',
         {
@@ -93,8 +101,6 @@ export const addToBookings = (booking) => {
       }
 
       const resData = await response.json();
-      //console.log(resData.booking);
-      //console.log("yo");
       const newBooking = {
         bookingID: resData.booking._id,
         staffId: resData.booking.staffId,
@@ -107,24 +113,27 @@ export const addToBookings = (booking) => {
         canceled: resData.canceled,
         dna: resData.booking.dna
       };
-      
+
       dispatch({
         type: ADD_TO_BOOKINGS,
         booking: newBooking,
       });
-      
+
     } catch (err) {
-      // send to custom analytics server
       throw err;
     }
   };
 };
 
+/**
+ * Send a POST Request over an establised HTTPUrlConnection to remove a booking from the
+ * database. It then dispatches to the reducer to remove this booking from the state of
+ * available bookings in the redux store
+ * @param {*} booking : booking object 
+ */
+
 export const removeFromBookings = (bookingID) => {
   return async (dispatch, getState) => {
-    // any async code you want!
-    //const userId = getState().auth.userId;
-    //console.log(getState().bookings.items);
     try {
       const response = await fetch(
         'http://192.168.50.136:9000/bookings/remove',
@@ -144,14 +153,13 @@ export const removeFromBookings = (bookingID) => {
       }
 
       const resData = await response.json();
-      
+
       dispatch({
-        type: REMOVE_FROM_BOOKINGS, 
+        type: REMOVE_FROM_BOOKINGS,
         bid: bookingID
       });
-      
+
     } catch (err) {
-      // send to custom analytics server
       throw err;
     }
   };

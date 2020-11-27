@@ -1,9 +1,18 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
+/**
+ * This is a reusable custom component, it can be used to represent items on a rounded card shape
+ * @param {*} props 
+ */
+
 const Card = props => {
   return <View style={{...styles.card, ...props.style}}>{props.children}</View>;
 };
+
+/**
+ * The styles used for the card component
+ */
 
 const styles = StyleSheet.create({
   card: {

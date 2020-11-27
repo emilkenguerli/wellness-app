@@ -1,11 +1,14 @@
 import {
   SET_EVENTS
 } from '../actions/events';
-//import Event from '../../models/event';
 
 const initialState = {
   availableEvents: [],
 };
+
+/**
+ * SET_ARTICLES: sets the availableEvents state to the events fetched from the database 
+ */
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -13,7 +16,7 @@ export default (state = initialState, action) => {
       return {
         availableEvents: action.events
       };
-    
+
   }
   return state;
 };
