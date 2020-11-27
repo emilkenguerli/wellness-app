@@ -22,12 +22,20 @@ const rootReducer = combineReducers({
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
+/**
+ * Fetches the fonts defined in assests so that it can be used anywhere in the app
+ */
+
 const fetchFonts = () => {
   return Font.loadAsync({
     'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
     'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf')
   });
 };
+
+/**
+ * This is the driver class that is first run upon app start up, it intiates the navigators
+ */
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false);

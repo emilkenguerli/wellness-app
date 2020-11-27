@@ -3,14 +3,25 @@ import { View, Text, Button, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 
-//import CartItem from './CartItem';
 import Colors from '../../constants/Colors';
 import Card from '../UI/Card';
 import * as bookingsActions from '../../store/actions/bookings';
 
+/**
+ * Reusable Booking item custom component, represents each booking displayed in the Bookings Screen on the 
+ * bookings list
+ * @param {*} props 
+ */
+
 const BookingItem = props => {
     const [showDetails, setShowDetails] = useState(false);
     const dispatch = useDispatch();
+
+    const cancelHandler = () => {
+      props.navigation.navigate('Cancel', {
+        id: props.item.bookingID
+      });
+    }
 
     return (
         <Card style={styles.orderItem}>
@@ -20,16 +31,16 @@ const BookingItem = props => {
         </View>
         <View style={styles.buttonContainer}>
             <Button
-                color={Colors.accent}
+                color={Colors.primary}
                 title={showDetails ? 'Hide Details' : 'Show Details'}
                 onPress={() => {
                 setShowDetails(prevState => !prevState);
                 }}
             />
             <Button
-                color={Colors.primary}
+                color={Colors.accent}
                 title="Cancel Booking"
-                onPress={() => {dispatch(bookingsActions.removeFromBookings(props.item.bookingID))}}
+                onPress={cancelHandler}
             />
         </View>
         {showDetails && (
@@ -60,6 +71,10 @@ const BookingItem = props => {
     );
 };
 
+/**
+ * The styles used for the Bookings item custom component
+ */
+
 const styles = StyleSheet.create({
   orderItem: {
     margin: 20,
@@ -67,7 +82,6 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   itemData: {
-    //flexDirection: 'row',
     alignItems: 'flex-start'
   },
   summary: {

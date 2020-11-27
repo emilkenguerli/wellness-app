@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
+/**
+ * The MongoDB model of the events collection
+ */
+
 const eventSchema = new Schema({
   eventOwner: { 
     staffId: {type: String , required: true},

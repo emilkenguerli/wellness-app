@@ -5,6 +5,11 @@ import { Ionicons } from '@expo/vector-icons';
 
 import Colors from '../../constants/Colors';
 
+/**
+ * Component that renders the header of screens white if android and blue if iOS
+ * @param {*} props 
+ */
+
 const CustomHeaderButton = props => {
   return (
     <HeaderButton

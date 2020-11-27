@@ -7,6 +7,13 @@ import * as authActions from '../../store/actions/auth';
 const INPUT_CHANGE = 'INPUT_CHANGE';
 const INPUT_BLUR = 'INPUT_BLUR';
 
+/**
+ * Handles the state of the input object based on the action it receives
+ * @param {*} state : this is the state of the current input object, in terms of it's value and 
+ *                    whether it is valid or not according to the conditions outlined below
+ * @param {*} action : can be either be an input change or input blur on keyboard release action
+ */
+
 const inputReducer = (state, action) => {
   switch (action.type) {
     case INPUT_CHANGE:
@@ -25,6 +32,12 @@ const inputReducer = (state, action) => {
   }
 };
 
+/**
+ * Component that renders a text input box as well as handles whether the text input into it is
+ * valid or not based on certain conditions.
+ * @param {*} props 
+ */
+
 const Input = props => {
   const [inputState, dispatchInput] = useReducer(inputReducer, {
     value: props.initialValue ? props.initialValue : '',
@@ -36,14 +49,24 @@ const Input = props => {
 
   const dispatch = useDispatch();
 
+  /**
+   * React hook that is called at the end of a render cycle if on of it's dependencies change, 
+   * i.e. if the state of the input changes, the actual input, or the id of the input object
+   */
+
   useEffect(() => {
     if (inputState.touched) {
       onInputChange(id, inputState.value, inputState.isValid);
     }
   }, [inputState, onInputChange, id]);
 
+  /**
+   * Tests the input text against several conditions to determine whether the text is valid or not,
+   * it then reflects the result as a boolean for the isValid attribute of the input object
+   * @param {*} text : the text that is input by the user
+   */
+
   const textChangeHandler = (text) => {
-    //console.log("Yo");
     const emailRegex = /^[a-z0-9](\.?[a-z0-9]){7,}@((myuct)|([[a-z]{2,}.uct)|(uct))\.ac.za$/i;
     const phoneRegex = /^[0-9]{10,}$/;
     const codeRegex = /^[0-9]{6,}$/;
@@ -81,11 +104,12 @@ const Input = props => {
     dispatchInput({ type: INPUT_CHANGE, value: text, isValid: isValid });
   };
 
+  /**
+   * If the user presses of the screen the action of the object changes to INPUT_BLUR
+   * and this is reflected in the state of the input object
+   */
+
   const lostFocusHandler = () => {
-    // console.log("kek");
-    // if(props.phone){     
-    //   textChangeHandler(text);
-    // };
     dispatchInput({ type: INPUT_BLUR });
   };
 
@@ -107,6 +131,10 @@ const Input = props => {
     </View>
   );
 };
+
+/**
+ * The styles used for the text box component
+ */
 
 const styles = StyleSheet.create({
   formControl: {

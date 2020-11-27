@@ -4,7 +4,7 @@ import {
   createDrawerNavigator,
   DrawerItemList
 } from '@react-navigation/drawer';
-import { Platform, SafeAreaView, Button, View } from 'react-native';
+import { Platform, SafeAreaView, Button, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
 
@@ -14,6 +14,9 @@ import AuthScreen, {
 import ForgotPassword, {
   screenOptions as forgotPasswordScreenOptions
 } from '../screens/user/ForgotPasswordScreen';
+import HomeScreen, {
+  screenOptions as HomeScreenOptions
+} from '../screens/booking/HomeScreen';
 import CalendarScreen, {
   screenOptions as calendarScreenOptions
 } from '../screens/booking/CalendarScreen';
@@ -23,6 +26,9 @@ import OptionsScreen, {
 import BookingsScreen, {
   screenOptions as bookingsScreenOptions
 } from '../screens/booking/BookingsScreen';
+import CancelScreen, {
+  screenOptions as cancelScreenOptions
+} from '../screens/booking/CancelScreen'
 import EventsScreen, {
   screenOptions as eventsScreenOptions
 } from '../screens/booking/EventsScreen';
@@ -34,6 +40,11 @@ import ArticleDetailScreen, {
 } from '../screens/booking/ArticleDetailScreen'; 
 import Colors from '../constants/Colors';
 import * as authActions from '../store/actions/auth';
+
+/**
+ * These are the default screen options for the head title of the screen that
+ * all the screens in the app get
+ */
 
 const defaultNavOptions = {
   headerStyle: {
@@ -48,7 +59,29 @@ const defaultNavOptions = {
   headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary
 };
 
+const HomeStackNavigator = createStackNavigator();
+
+/**
+ * The navigator for the Home Screen
+ */
+
+export const HomeNavigator = () => {
+  return (
+    <HomeStackNavigator.Navigator screenOptions={defaultNavOptions}>
+      <HomeStackNavigator.Screen
+        name="Home"
+        component={HomeScreen}
+        options={HomeScreenOptions}
+      />
+    </HomeStackNavigator.Navigator>
+  );
+};
+
 const CalendarStackNavigator = createStackNavigator();
+
+/**
+ * The navigator for the Calendar and Options screens
+ */
 
 export const CalendarNavigator = () => {
   return (
@@ -69,6 +102,10 @@ export const CalendarNavigator = () => {
 
 const BookingsStackNavigator = createStackNavigator();
 
+/**
+ * The navigator for the Bookings Screen
+ */
+
 export const BookingsNavigator = () => {
   return (
     <BookingsStackNavigator.Navigator screenOptions={defaultNavOptions}>
@@ -77,11 +114,20 @@ export const BookingsNavigator = () => {
         component={BookingsScreen}
         options={bookingsScreenOptions}
       />
+      <CalendarStackNavigator.Screen
+        name="Cancel"
+        component={CancelScreen}
+        options={cancelScreenOptions}
+      />
     </BookingsStackNavigator.Navigator>
   );
 };
 
 const EventsStackNavigator = createStackNavigator();
+
+/**
+ * The navigator for the Events Screen
+ */
 
 export const EventsNavigator = () => {
   return (
@@ -96,6 +142,10 @@ export const EventsNavigator = () => {
 };
 
 const ArticlesStackNavigator = createStackNavigator();
+
+/**
+ * The navigator for the Articles and ArticleDetails screens
+ */
 
 export const ArticlesNavigator = () => {
   return (
@@ -115,6 +165,13 @@ export const ArticlesNavigator = () => {
 };
 
 const ShopDrawerNavigator = createDrawerNavigator();
+
+/**
+ * This compiles all the navigators and handles which one is show depending on how the user 
+ * interacts with the navigation tools. It also gives every screen except Options and
+ * ArticleDetails screens a position in the drawer menu. This menu bar has all the screens 
+ * listed on it as well as a logout button at the bottom
+ */
 
 export const BookingNavigator = () => {
   const dispatch = useDispatch();
@@ -143,6 +200,19 @@ export const BookingNavigator = () => {
         activeTintColor: Colors.primary
       }}
     >
+      <ShopDrawerNavigator.Screen
+        name="Home"
+        component={HomeNavigator}
+        options={{
+          drawerIcon: props => (
+            <Ionicons
+              name={Platform.OS === 'android' ? 'md-list' : 'ios-list'}
+              size={23}
+              color={props.color}
+            />
+          )
+        }}
+      />
       <ShopDrawerNavigator.Screen
         name="Calendar"
         component={CalendarNavigator}
@@ -200,6 +270,10 @@ export const BookingNavigator = () => {
 };
 
 const AuthStackNavigator = createStackNavigator();
+
+/**
+ * The navigator for the user authentication screens
+ */
 
 export const AuthNavigator = () => {
   return (

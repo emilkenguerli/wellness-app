@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
+/**
+ * The MongoDB model of the bookings collection
+ */
+
 const bookingSchema = new Schema({
     staffId: {type: String, required: true },
     team: {type: String, required: true },

@@ -1,4 +1,4 @@
-import { AUTHENTICATE, LOGOUT, SET_DID_TRY_AL, SET_PASSWORD} from '../actions/auth';
+import { AUTHENTICATE, LOGOUT, SET_DID_TRY_AL, SET_PASSWORD } from '../actions/auth';
 
 const initialState = {
   token: null,
@@ -11,6 +11,13 @@ const initialState = {
   password: ''
 };
 
+/**
+ * SET_PASSWORD: sets the password that has been retyped to the password state in redux store
+ * AUTHENTICATE: sets the values dispatched upon login to the states defining the user
+ * SET_DID_TRY_AL: sets the state of whether the user has tried to autologin or not to true
+ * LOGOUT: sets the state of whether the user has tried to autologin or not to true
+ */
+
 export default (state = initialState, action) => {
   switch (action.type) {
     case SET_PASSWORD:
@@ -19,7 +26,8 @@ export default (state = initialState, action) => {
         password: action.password
       }
     case AUTHENTICATE:
-      return {
+      console.log(action.email);
+      return {       
         token: action.token,
         userId: action.userId,
         didTryAutoLogin: true,
